@@ -1,0 +1,100 @@
+version: "3.9"
+
+services:
+  # MySQL 8.0 Database Service
+  db:
+    image: mysql:8.0
+    container_name: training-center-db
+    restart: unless-stopped
+    hostname: db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: training_center
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_INITDB_SKIP_TZINFO: "yes"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - training-network
+
+  # Spring Boot Application Service
+  app:
+    build:
+      context: ./trainingcenter
+      dockerfile: ../Dockerfile
+    container_name: training-center-app
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    environment:
+      # Spring DataSource Configuration
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/training_center?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD: app
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+
+      # JPA/Hibernate Configuration
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "false"
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+
+      # Application Configuration
+      SPRING_APPLICATION_NAME: training-center
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      SERVER_SERVLET_CONTEXT_PATH: /
+
+      # Thymeleaf Configuration
+      SPRING_THYMELEAF_CACHE: "true"
+
+      # Logging Configuration
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_LEVEL_COM_IIT_TRAININGCENTER: DEBUG
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - training-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # phpMyAdmin Service (Optional Database Management)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: training-center-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+      PMA_DATABASE: training_center
+      UPLOAD_LIMIT: 300M
+    depends_on:
+      - db
+    networks:
+      - training-network
+
+# Network Configuration
+networks:
+  training-network:
+    driver: bridge
+
+# Volume Configuration
+volumes:
+  db_data:
+    driver: local
