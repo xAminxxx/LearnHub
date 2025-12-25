@@ -2,9 +2,11 @@ package com.iit.trainingcenter.util;
 
 import com.iit.trainingcenter.entity.Specialization;
 import com.iit.trainingcenter.entity.Student;
+import com.iit.trainingcenter.entity.StudentGroup;
 import com.iit.trainingcenter.entity.Trainer;
 import com.iit.trainingcenter.repository.SpecializationRepository;
 import com.iit.trainingcenter.repository.StudentRepository;
+import com.iit.trainingcenter.repository.StudentGroupRepository;
 import com.iit.trainingcenter.repository.TrainerRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -17,13 +19,16 @@ public class DataInitializer implements CommandLineRunner {
     private final StudentRepository studentRepository;
     private final SpecializationRepository specializationRepository;
     private final TrainerRepository trainerRepository;
+    private final StudentGroupRepository studentGroupRepository;
 
     public DataInitializer(StudentRepository studentRepository,
             SpecializationRepository specializationRepository,
-            TrainerRepository trainerRepository) {
+            TrainerRepository trainerRepository,
+            StudentGroupRepository studentGroupRepository) {
         this.studentRepository = studentRepository;
         this.specializationRepository = specializationRepository;
         this.trainerRepository = trainerRepository;
+        this.studentGroupRepository = studentGroupRepository;
     }
 
     @Override
@@ -39,6 +44,19 @@ public class DataInitializer implements CommandLineRunner {
             s2.setName("Network Engineering");
             s2.setDescription("Cloud and Cybersecurity");
             specializationRepository.save(s2);
+
+            // 1.5. Create Sample Student Groups
+            StudentGroup g1 = new StudentGroup();
+            g1.setName("TP1");
+            g1.setYear(2025);
+            g1.setDescription("Morning practical group for Computer Science");
+            studentGroupRepository.save(g1);
+
+            StudentGroup g2 = new StudentGroup();
+            g2.setName("TP2");
+            g2.setYear(2025);
+            g2.setDescription("Afternoon practical group for Network Engineering");
+            studentGroupRepository.save(g2);
 
             // 2. Create Sample Trainers
             Trainer t1 = new Trainer();
@@ -92,7 +110,7 @@ public class DataInitializer implements CommandLineRunner {
             st2.setSpecialization(s2);
             studentRepository.save(st2);
 
-            System.out.println("✅ Sample data (Specializations, Trainers, Students) initialized!");
+            System.out.println("✅ Sample data (Specializations, Groups, Trainers, Students) initialized!");
         }
     }
 }
