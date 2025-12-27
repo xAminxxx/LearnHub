@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   # MySQL 8.0 Database Service
   db:
@@ -31,43 +33,39 @@ services:
     container_name: training-center-app
     restart: unless-stopped
     ports:
-      - "8081:8080"
+      - "8085:8080"
     environment:
-      # Spring DataSource Configuration
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/training_center?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: app
       SPRING_DATASOURCE_PASSWORD: app
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
 
-      # JPA/Hibernate Configuration
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: "false"
       SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
 
-      # Application Configuration
       SPRING_APPLICATION_NAME: training-center
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8080
       SERVER_SERVLET_CONTEXT_PATH: /
 
-      # Thymeleaf Configuration
       SPRING_THYMELEAF_CACHE: "true"
 
-      # Logging Configuration
       LOGGING_LEVEL_ROOT: INFO
       LOGGING_LEVEL_COM_IIT_TRAININGCENTER: DEBUG
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     networks:
       - training-network
+    command: ["./wait-for-it.sh", "db:3306", "--timeout=60", "--strict", "--", "java", "-jar", "/app.jar"]
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/ || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    volumes:
+      - ./trainingcenter/wait-for-it.sh:/wait-for-it.sh
+      - ./trainingcenter/target/app.jar:/app.jar
 
   # phpMyAdmin Service (Optional Database Management)
   phpmyadmin:
@@ -75,7 +73,7 @@ services:
     container_name: training-center-phpmyadmin
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8082:80"
     environment:
       PMA_HOST: db
       PMA_USER: root
@@ -96,3 +94,4 @@ networks:
 volumes:
   db_data:
     driver: local
+
