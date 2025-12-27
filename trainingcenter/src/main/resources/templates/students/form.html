@@ -16,6 +16,9 @@
                     <form th:action="${student.id == null ? '/students' : '/students/update/' + student.id}" 
                           th:object="${student}" method="post">
                         
+                        <!-- Hidden ID field is crucial for updates -->
+                        <input type="hidden" th:field="*{id}" />
+
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="firstName" class="form-label">First Name</label>
