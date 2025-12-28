@@ -44,9 +44,6 @@ public class Trainer {
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
     private List<Course> courses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Grade> grades = new ArrayList<>();
-
     public String getFullName() {
         return firstName + " " + lastName;
     }

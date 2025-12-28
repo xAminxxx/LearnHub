@@ -17,3 +17,15 @@ spring:
 
 server:
   port: 8080
+
+# Management server on separate port for health checks
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always

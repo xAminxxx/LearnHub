@@ -1,5 +1,6 @@
 package com.iit.trainingcenter.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,12 +26,15 @@ public class Specialization {
     private String description;
 
     @OneToMany(mappedBy = "specialization", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Course> courses = new ArrayList<>();
 
     @OneToMany(mappedBy = "specialization", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Student> students = new ArrayList<>();
 
     @OneToMany(mappedBy = "specialization", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Trainer> trainers = new ArrayList<>();
 
     public int getCourseCount() {

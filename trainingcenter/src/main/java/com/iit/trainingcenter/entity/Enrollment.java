@@ -1,6 +1,8 @@
 package com.iit.trainingcenter.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,6 +39,14 @@ public class Enrollment {
 
     @Column(length = 500)
     private String notes;
+
+    @Column
+    @Min(0)
+    @Max(20)
+    private Double score; // Grade score 0-20
+
+    @Column
+    private String gradeType; // EXAM, QUIZ, PROJECT, PARTICIPATION
 
     @PrePersist
     protected void onCreate() {

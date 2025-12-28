@@ -44,12 +44,6 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Schedule> schedules = new ArrayList<>();
-
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Session> sessions = new ArrayList<>();
-
     public String getFullName() {
         return code + " - " + title;
     }
@@ -62,10 +56,5 @@ public class Course {
 
     public boolean isAvailable() {
         return getEnrolledStudentsCount() < maxStudents;
-    }
-
-    public boolean hasConflictWith(Schedule schedule) {
-        return schedules.stream()
-                .anyMatch(s -> s.conflictsWith(schedule));
     }
 }
