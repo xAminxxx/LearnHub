@@ -1,4 +1,4 @@
-package com.iit.trainingcenter.controller;
+package com.iit.trainingcenter.web;
 
 import com.iit.trainingcenter.service.TrainerService;
 import org.springframework.stereotype.Controller;

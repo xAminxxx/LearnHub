@@ -1,5 +1,6 @@
 package com.iit.trainingcenter.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,30 +40,14 @@ public class Student {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialization_id", nullable = false)
+    @JsonBackReference
     private Specialization specialization;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    private StudentGroup studentGroup;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Grade> grades = new ArrayList<>();
-
     public String getFullName() {
         return firstName + " " + lastName;
-    }
-
-    public double getAverageGrade() {
-        if (grades.isEmpty()) {
-            return 0.0;
-        }
-        return grades.stream()
-                .mapToDouble(Grade::getValue)
-                .average()
-                .orElse(0.0);
     }
 
     public List<Course> getEnrolledCourses() {

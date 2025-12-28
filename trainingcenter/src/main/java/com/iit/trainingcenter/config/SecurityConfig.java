@@ -33,6 +33,7 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
                 .permitAll()
+                .defaultSuccessUrl("/students", true)
             )
             .logout(logout -> logout
                 .permitAll()

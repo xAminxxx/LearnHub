@@ -13,9 +13,9 @@
                     <h3 class="card-title mb-0" th:text="${student.id == null ? 'Add New Student' : 'Edit Student'}">Student Form</h3>
                 </div>
                 <div class="card-body">
-                    <form th:action="${student.id == null ? '/students' : '/students/update/' + student.id}" 
+                    <form th:action="@{${student.id == null} ? '/students' : '/students/update/' + ${student.id}}"
                           th:object="${student}" method="post">
-                        
+
                         <!-- Hidden ID field is crucial for updates -->
                         <input type="hidden" th:field="*{id}" />
 
@@ -61,9 +61,9 @@
                             <label for="specialization" class="form-label">Specialization</label>
                             <select class="form-select" id="specialization" th:field="*{specialization}" required>
                                 <option value="">Select Specialization</option>
-                                <option th:each="spec : ${specializations}" 
-                                        th:value="${spec.id}" 
-                                        th:text="${spec.name}">IT</option>
+                                <option th:each="spec : ${specializations}"
+                                        th:value="${spec.id}"
+                                        th:text="${spec.name}"></option>
                             </select>
                             <div class="text-danger" th:if="${#fields.hasErrors('specialization')}" th:errors="*{specialization}"></div>
                         </div>

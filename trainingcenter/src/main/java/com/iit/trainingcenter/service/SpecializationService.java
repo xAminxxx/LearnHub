@@ -18,6 +18,10 @@ public class SpecializationService {
         return specializationRepository.findAll();
     }
 
+    public Specialization getSpecializationById(Long id) {
+        return specializationRepository.findById(id).orElse(null);
+    }
+
     public Specialization saveSpecialization(Specialization specialization) {
         return specializationRepository.save(specialization);
     }

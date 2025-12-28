@@ -48,21 +48,30 @@
                     
                     <hr>
                     
-                    <h5 class="mt-4">Academic Performance</h5>
-                    <div class="row mb-3">
-                        <div class="col-md-4 fw-bold">Average Grade:</div>
-                        <div class="col-md-8" th:text="${#numbers.formatDecimal(student.averageGrade, 1, 2)}">15.50</div>
-                    </div>
-                    
-                    <h5 class="mt-4">Enrolled Courses</h5>
+                    <h5 class="mt-4">Course Enrollments</h5>
                     <div th:if="${#lists.isEmpty(student.enrolledCourses)}" class="text-muted">
                         No active course enrollments.
                     </div>
-                    <ul class="list-group" th:unless="${#lists.isEmpty(student.enrolledCourses)}">
-                        <li class="list-group-item" th:each="course : ${student.enrolledCourses}" th:text="${course.title}">
-                            Java Programming
-                        </li>
-                    </ul>
+                    <table class="table table-sm" th:unless="${#lists.isEmpty(student.enrolledCourses)}">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Title</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="enrollment : ${student.enrollments}">
+                                <td th:text="${enrollment.course.code}">CS101</td>
+                                <td th:text="${enrollment.course.title}">Java Programming</td>
+                                <td>
+                                    <span th:if="${enrollment.isActive()}" class="badge bg-success">Active</span>
+                                    <span th:if="${enrollment.isCompleted()}" class="badge bg-info">Completed</span>
+                                    <span th:if="${enrollment.isCancelled()}" class="badge bg-danger">Cancelled</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
