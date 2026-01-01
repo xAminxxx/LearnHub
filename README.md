@@ -1,67 +1,59 @@
-# Training Center Management System
+# LearnHub / Training Center Management System
 
-A comprehensive Spring Boot application for managing a training center with students, trainers, courses, enrollments, grades, and schedules.
+A Spring Boot application for managing a training center.
 
-## Project Structure
+It supports both:
+
+- **Thymeleaf Web UI** (server-rendered pages)
+- **REST API** (JSON endpoints)
+
+## Project Structure (current)
 
 ```
-mini-project-spring/
-├── trainingcenter/              # Main Spring Boot project
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/com/iit/trainingcenter/
-│   │   │   │   ├── entity/          # JPA entities (12 classes)
-│   │   │   │   ├── repository/      # Spring Data JPA repositories
-│   │   │   │   ├── service/         # Business logic services
-│   │   │   │   ├── controller/      # REST & Web controllers
-│   │   │   │   ├── dto/             # Data Transfer Objects
-│   │   │   │   ├── config/          # Spring configurations
-│   │   │   │   ├── exception/       # Custom exceptions
-│   │   │   │   └── util/            # Utility classes
-│   │   │   └── resources/
-│   │   │       ├── application.yml        # Local development config
-│   │   │       ├── application-docker.yml # Docker production config
-│   │   │       ├── static/          # Static files (CSS, JS, images)
-│   │   │       └── templates/       # Thymeleaf templates
-│   │   └── test/                # Unit tests
-│   ├── pom.xml                  # Maven dependencies
-│   ├── mvnw & mvnw.cmd         # Maven wrapper
-│   └── target/                  # Compiled output
-├── frontend/                    # Angular application (optional)
-├── documentation/               # UML diagrams and documentation
-│   ├── 01-use-case-diagram.md
-│   ├── 02-package-diagram.md
-│   ├── 03-class-diagram.md
-│   ├── 04-sequence-diagram.md
-│   ├── 05-user-stories.md
-│   └── diagrams/               # Generated diagram images
-├── Dockerfile                   # Docker image for Spring Boot app
-├── docker-compose.yml          # Docker Compose for full stack
-└── .dockerignore               # Files to exclude from Docker build
+LearnHub/
+├── trainingcenter/                         # Spring Boot application
+│   ├── mvnw / mvnw.cmd                     # Maven wrapper
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/com/iit/trainingcenter/
+│       │   │   ├── TrainingCenterApplication.java
+│       │   │   ├── config/                 # Spring config (Security/Web/...)
+│       │   │   ├── entity/                 # JPA entities
+│       │   │   ├── repository/             # Spring Data repositories
+│       │   │   ├── service/                # Business logic
+│       │   │   ├── util/                   # Utilities / initial data
+│       │   │   ├── web/                    # MVC controllers (Thymeleaf pages)
+│       │   │   └── restcontroller/         # REST controllers (JSON API)
+│       │   └── resources/
+│       │       ├── application.yml
+│       │       ├── application-docker.yml
+│       │       └── templates/              # Thymeleaf templates
+│       └── test/
+├── docker-compose.yml                      # App + MySQL + phpMyAdmin
+├── Dockerfile                              # Multi-stage build for Spring Boot app
+└── documentation/                          # UML diagrams and documentation
 ```
 
 ---
 
 ## Prerequisites
 
-- **Java 17+** ([Download](https://www.oracle.com/java/technologies/downloads/#java17))
-- **Maven 3.9+** ([Download](https://maven.apache.org/download.cgi))
-- **Docker Desktop** ([Download](https://www.docker.com/products/docker-desktop))
-- **Git** (optional, for version control)
+- **Java 17+**
+- **Docker + Docker Compose** (recommended)
+- Optional for local runs: Maven, or use the included Maven Wrapper (`./mvnw`)
 
 ---
 
-## Quick Start (Docker Compose - Recommended)
+## Quick Start (Docker Compose - recommended)
 
 ### For New Users (First Time Setup)
 
 After cloning the project:
 
-```powershell
-# Navigate to project directory
-cd mini-project-spring
-
-# Start all services with single command
+docker compose up --build
+```bash
+# from repo root
 docker compose up --build
 ```
 
@@ -74,15 +66,16 @@ docker compose up --build
 - ✅ Create and initialize the database automatically
 - ✅ All services communicate via Docker network
 
-### Access the Application
+### Access
 
 Once all services are running (wait ~30 seconds), open your browser:
 
-| Service             | URL                   | Credentials          |
-| ------------------- | --------------------- | -------------------- |
-| **Spring Boot App** | http://localhost:8081 | `admin` / `admin123` |
-| **phpMyAdmin**      | http://localhost:8080 | `root` / `root`      |
-| **MySQL**           | localhost:3306        | `app` / `app`        |
+| Service | URL | Notes |
+| --- | --- | --- |
+| Web UI (Thymeleaf) | http://localhost:8085/students | Served by controllers in `web/` |
+| REST API | http://localhost:8085/api/students | Served by controllers in `restcontroller/` |
+| phpMyAdmin | http://localhost:8082 | MySQL UI |
+| MySQL | localhost:3306 | user/pass: `app` / `app` |
 
 ### Stop the Application
 
@@ -90,11 +83,11 @@ Press **Ctrl+C** in the terminal.
 
 ---
 
-### For Existing Setup (Restart/Fresh Start)
+### Reset (fresh DB)
 
 To clean up and start fresh:
 
-```powershell
+```bash
 docker compose down -v
 docker compose up --build
 ```
@@ -103,27 +96,40 @@ This removes all containers and the database volume, giving you a completely cle
 
 ---
 
-## Development Mode (Local - Advanced)
+## Local development (without Docker Compose)
 
-If you want to run locally without Docker:
+If you want to run locally (outside Docker Compose), you need a MySQL database.
 
-### Step 1: Start MySQL Database
+### Start MySQL (DB only)
 
-```powershell
-docker run -d --name training-db -p 3307:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=training_center mysql:8.0
+```bash
+docker run -d --name training-db \
+  -p 3307:3306 \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -e MYSQL_DATABASE=training_center \
+  mysql:8.0
 ```
 
-### Step 2: Build & Run Spring Boot
+### Run Spring Boot
 
-Navigate to the project:
-
-```powershell
-cd c:\Users\makni\OneDrive\Bureau\mini-project-spring\trainingcenter
-mvn clean package -DskipTests
-mvn spring-boot:run
+```bash
+cd trainingcenter
+./mvnw spring-boot:run
 ```
 
-Access: http://localhost:8080 with credentials `admin` / `admin123`
+By default it runs on http://localhost:8080 (unless you changed `server.port`).
+
+## REST + Web together
+
+Both are served by the same Spring Boot app:
+
+- `trainingcenter/src/main/java/com/iit/trainingcenter/web` → Thymeleaf pages
+- `trainingcenter/src/main/java/com/iit/trainingcenter/restcontroller` → REST JSON endpoints
+
+Example:
+
+- Web: `GET /students`
+- REST: `GET /api/students`
 
 ---
 
@@ -189,7 +195,7 @@ spring:
 | **Hibernate**       | 6.6.x   | Object-relational mapping          |
 | **MySQL**           | 8.0     | Database                           |
 | **Spring Security** | 6.x     | Authentication & authorization     |
-| **Thymeleaf**       | 3.x     | Server-side templating             |
+| **Thymeleaf**       | 3.x     | Web UI templating                  |
 | **Maven**           | 3.9.x   | Build & dependency management      |
 | **Docker**          | Latest  | Containerization                   |
 | **Angular**         | 18+     | Frontend (optional)                |
@@ -214,12 +220,10 @@ spring:
 
 **Solution:**
 
-```powershell
-# Find process using port
-netstat -ano | findstr :3307
+On Linux/macOS, to check a port:
 
-# Kill process (replace PID)
-taskkill /PID <PID> /F
+```bash
+ss -lntp | grep 3307
 ```
 
 Or use different port in `application.yml`:
@@ -235,24 +239,12 @@ datasource:
 
 **Solution:**
 
-```powershell
-# Clean and rebuild
-mvn clean -U install
-
-# Or skip tests
-mvn clean package -DskipTests
+```bash
+cd trainingcenter
+./mvnw clean package
 ```
 
 ### phpMyAdmin Connection Issues
 
-**Error:** `Cannot connect: invalid settings`
-
-**Solution:**
-
-1. Find MySQL container IP: `docker inspect training-db --format='{{.NetworkSettings.IPAddress}}'`
-2. Update phpMyAdmin with correct IP:
-   ```powershell
-   docker stop phpmyadmin
-   docker rm phpmyadmin
-   docker run -d --name phpmyadmin -p 8081:80 -e PMA_HOST=<IP> -e PMA_USER=root -e PMA_PASSWORD=root phpmyadmin
-   ```
+If you’re using Docker Compose, phpMyAdmin connects via the service name `db`.
+If you rename the DB service, update `PMA_HOST` in `docker-compose.yml`.
