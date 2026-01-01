@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout}">
+
+<div th:fragment="content">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h3 mb-1">Enrollments</h1>
+      <div class="text-secondary">Manage enrollments</div>
+    </div>
+    <a class="btn btn-primary" th:href="@{/admin/enrollments/new}">New enrollment</a>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Student</th>
+            <th>Course</th>
+            <th>Status</th>
+            <th>Enrolled at</th>
+            <th class="text-end">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="e : ${enrollments}">
+            <td th:text="${e.id}">1</td>
+            <td th:text="${e.student != null ? e.student.fullName : 'N/A'}">Student</td>
+            <td th:text="${e.course != null ? e.course.fullName : 'N/A'}">Course</td>
+            <td>
+              <span class="badge text-bg-secondary" th:text="${e.status}">ACTIVE</span>
+            </td>
+            <td th:text="${e.enrollmentDate}">date</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/enrollments/{id}(id=${e.id})}">View</a>
+              <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/enrollments/{id}/edit(id=${e.id})}">Edit</a>
+              <form th:action="@{/admin/enrollments/{id}/delete(id=${e.id})}" method="post" class="d-inline"
+                    onsubmit="return confirm('Delete this enrollment?');">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(enrollments)}">
+            <td colspan="6" class="text-center text-secondary">No enrollments found</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</html>

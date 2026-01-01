@@ -26,18 +26,17 @@ public class StudentService {
     }
 
     public Student updateStudent(Long id, Student studentDetails) {
-        Student student = studentRepository.findById(id).orElse(null);
-        if (student != null) {
-            student.setFirstName(studentDetails.getFirstName());
-            student.setLastName(studentDetails.getLastName());
-            student.setEmail(studentDetails.getEmail());
-            student.setPhone(studentDetails.getPhone());
-            student.setBirthDate(studentDetails.getBirthDate());
-            student.setEnrollmentDate(studentDetails.getEnrollmentDate());
-            student.setSpecialization(studentDetails.getSpecialization());
-            return studentRepository.save(student);
-        }
-        return null;
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found: " + id));
+
+        student.setFirstName(studentDetails.getFirstName());
+        student.setLastName(studentDetails.getLastName());
+        student.setEmail(studentDetails.getEmail());
+        student.setPhone(studentDetails.getPhone());
+        student.setBirthDate(studentDetails.getBirthDate());
+        student.setEnrollmentDate(studentDetails.getEnrollmentDate());
+        student.setSpecialization(studentDetails.getSpecialization());
+        return studentRepository.save(student);
     }
 
     public void deleteStudent(Long id) {

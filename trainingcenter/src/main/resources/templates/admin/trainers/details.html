@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout}">
+
+<div th:fragment="content">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h3 mb-1" th:text="${trainer.fullName}">Trainer</h1>
+      <div class="text-secondary">Trainer details</div>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary" th:href="@{/admin/trainers}">Back</a>
+      <a class="btn btn-outline-primary" th:href="@{/admin/trainers/{id}/edit(id=${trainer.id})}">Edit</a>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <dl class="row mb-0">
+        <dt class="col-sm-3">ID</dt>
+        <dd class="col-sm-9" th:text="${trainer.id}">1</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9" th:text="${trainer.email}">email</dd>
+
+        <dt class="col-sm-3">Phone</dt>
+        <dd class="col-sm-9" th:text="${trainer.phone}">phone</dd>
+
+        <dt class="col-sm-3">Hire date</dt>
+        <dd class="col-sm-9" th:text="${trainer.hireDate}">date</dd>
+
+        <dt class="col-sm-3">Specialization</dt>
+        <dd class="col-sm-9" th:text="${trainer.specialization != null ? trainer.specialization.name : 'N/A'}">spec</dd>
+
+        <dt class="col-sm-3">Bio</dt>
+        <dd class="col-sm-9" th:text="${trainer.bio}">bio</dd>
+      </dl>
+    </div>
+  </div>
+</div>
+
+</html>

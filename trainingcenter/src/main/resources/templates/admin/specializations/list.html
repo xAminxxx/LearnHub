@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout}">
+
+<div th:fragment="content">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h3 mb-1">Specializations</h1>
+      <div class="text-secondary">Manage specializations</div>
+    </div>
+    <a class="btn btn-primary" th:href="@{/admin/specializations/new}">New specialization</a>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th class="text-end">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="sp : ${specializations}">
+            <td th:text="${sp.id}">1</td>
+            <td th:text="${sp.name}">Name</td>
+            <td th:text="${sp.description}">Desc</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/specializations/{id}/edit(id=${sp.id})}">Edit</a>
+              <form th:action="@{/admin/specializations/{id}/delete(id=${sp.id})}" method="post" class="d-inline"
+                    onsubmit="return confirm('Delete this specialization?');">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(specializations)}">
+            <td colspan="4" class="text-center text-secondary">No specializations found</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</html>

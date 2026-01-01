@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout}">
+
+<div th:fragment="content">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h3 mb-1" th:text="${specialization.id == null} ? 'New Specialization' : 'Edit Specialization'">Specialization</h1>
+      <div class="text-secondary">Fill specialization information</div>
+    </div>
+    <a class="btn btn-outline-secondary" th:href="@{/admin/specializations}">Back</a>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form th:action="${specialization.id == null} ? @{/admin/specializations} : @{/admin/specializations/{id}(id=${specialization.id})}"
+            th:object="${specialization}"
+            method="post" class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label">Name</label>
+          <input class="form-control" type="text" th:field="*{name}">
+        </div>
+
+        <div class="col-md-12">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" rows="3" th:field="*{description}"></textarea>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-primary" type="submit">Save</button>
+          <a class="btn btn-outline-secondary" th:href="@{/admin/specializations}">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+</html>

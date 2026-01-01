@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout}">
+
+<div th:fragment="content">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h3 mb-1" th:text="${enrollment.id == null} ? 'New Enrollment' : 'Edit Enrollment'">Enrollment</h1>
+      <div class="text-secondary">Select student, course and status</div>
+    </div>
+    <a class="btn btn-outline-secondary" th:href="@{/admin/enrollments}">Back</a>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form th:action="${enrollment.id == null} ? @{/admin/enrollments} : @{/admin/enrollments/{id}(id=${enrollment.id})}"
+            th:object="${enrollment}"
+            method="post" class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label">Student</label>
+          <select class="form-select" name="studentId" required>
+            <option value="" disabled th:selected="${enrollment.student == null}">Choose...</option>
+            <option th:each="s : ${students}"
+                    th:value="${s.id}"
+                    th:selected="${enrollment.student != null && s.id == enrollment.student.id}"
+                    th:text="${s.fullName}">Student</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Course</label>
+          <select class="form-select" name="courseId" required>
+            <option value="" disabled th:selected="${enrollment.course == null}">Choose...</option>
+            <option th:each="c : ${courses}"
+                    th:value="${c.id}"
+                    th:selected="${enrollment.course != null && c.id == enrollment.course.id}"
+                    th:text="${c.fullName}">Course</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Status</label>
+          <select class="form-select" th:field="*{status}">
+            <option th:each="st : ${statuses}" th:value="${st}" th:text="${st}">ACTIVE</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Score (0-20)</label>
+          <input class="form-control" type="number" step="0.1" min="0" max="20" th:field="*{score}">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Notes</label>
+          <textarea class="form-control" rows="3" th:field="*{notes}"></textarea>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-primary" type="submit">Save</button>
+          <a class="btn btn-outline-secondary" th:href="@{/admin/enrollments}">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+</html>
