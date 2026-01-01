@@ -1,5 +1,7 @@
 package com.iit.trainingcenter.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,9 +41,11 @@ public class Trainer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialization_id", nullable = false)
+    @JsonBackReference("trainer-specialization")
     private Specialization specialization;
 
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
+    @JsonManagedReference("course-trainer")
     private List<Course> courses = new ArrayList<>();
 
     public String getFullName() {

@@ -1,8 +1,9 @@
 package com.iit.trainingcenter.restcontroller;
 
+import com.iit.trainingcenter.dto.DtoMapper;
+import com.iit.trainingcenter.dto.StudentDto;
 import com.iit.trainingcenter.entity.Student;
 import com.iit.trainingcenter.service.StudentService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,48 +19,27 @@ public class StudentRestController {
     }
 
     @GetMapping
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    public List<StudentDto> getAllStudents() {
+        return studentService.getAllStudents().stream().map(DtoMapper::toDto).toList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
-        Student student = studentService.getStudentById(id);
-        if (student != null) {
-            return ResponseEntity.ok(student);
-        }
-        return ResponseEntity.notFound().build();
+    public StudentDto getStudentById(@PathVariable Long id) {
+        return DtoMapper.toDto(studentService.getStudentById(id));
     }
 
     @PostMapping
-    public Student createStudent(@RequestBody Student student) {
-        return studentService.saveStudent(student);
+    public StudentDto createStudent(@RequestBody Student student) {
+        return DtoMapper.toDto(studentService.createStudent(student));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student studentDetails) {
-        Student student = studentService.getStudentById(id);
-        if (student != null) {
-            student.setFirstName(studentDetails.getFirstName());
-            student.setLastName(studentDetails.getLastName());
-            student.setEmail(studentDetails.getEmail());
-            student.setPhone(studentDetails.getPhone());
-            student.setBirthDate(studentDetails.getBirthDate());
-            student.setEnrollmentDate(studentDetails.getEnrollmentDate());
-            student.setSpecialization(studentDetails.getSpecialization());
-            Student updatedStudent = studentService.saveStudent(student);
-            return ResponseEntity.ok(updatedStudent);
-        }
-        return ResponseEntity.notFound().build();
+    public StudentDto updateStudent(@PathVariable Long id, @RequestBody Student studentDetails) {
+        return DtoMapper.toDto(studentService.updateStudent(id, studentDetails));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
-        Student student = studentService.getStudentById(id);
-        if (student != null) {
-            studentService.deleteStudent(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    public void deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
     }
 }

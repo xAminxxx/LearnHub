@@ -9,6 +9,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    open-in-view: true
     show-sql: true
     properties:
       hibernate:
@@ -28,3 +29,8 @@ logging:
   level:
     root: INFO
     com.iit.trainingcenter: DEBUG
+
+jwt:
+  # HS512 requires a secret key of at least 64+ characters.
+  secret: "abczreAminZahryzheraXhreurabczreAminZahryzheraXhreurabczreAminZahryzheraXhreurabczreAminZahryzheraXhreur"
+  expiration: 3600000 # Token expiration time in milliseconds (1 hour)

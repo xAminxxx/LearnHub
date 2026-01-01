@@ -18,12 +18,26 @@ public class StudentService {
     }
 
     public Student getStudentById(Long id) {
-        return studentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid student Id:" + id));
+        return studentRepository.findById(id).orElse(null);
     }
 
-    public Student saveStudent(Student student) {
+    public Student createStudent(Student student) {
         return studentRepository.save(student);
+    }
+
+    public Student updateStudent(Long id, Student studentDetails) {
+        Student student = studentRepository.findById(id).orElse(null);
+        if (student != null) {
+            student.setFirstName(studentDetails.getFirstName());
+            student.setLastName(studentDetails.getLastName());
+            student.setEmail(studentDetails.getEmail());
+            student.setPhone(studentDetails.getPhone());
+            student.setBirthDate(studentDetails.getBirthDate());
+            student.setEnrollmentDate(studentDetails.getEnrollmentDate());
+            student.setSpecialization(studentDetails.getSpecialization());
+            return studentRepository.save(student);
+        }
+        return null;
     }
 
     public void deleteStudent(Long id) {
