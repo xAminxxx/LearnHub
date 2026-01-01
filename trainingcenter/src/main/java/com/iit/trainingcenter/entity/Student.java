@@ -1,6 +1,7 @@
 package com.iit.trainingcenter.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,10 +41,11 @@ public class Student {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialization_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("student-specialization")
     private Specialization specialization;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("student-enrollment")
     private List<Enrollment> enrollments = new ArrayList<>();
 
     public String getFullName() {

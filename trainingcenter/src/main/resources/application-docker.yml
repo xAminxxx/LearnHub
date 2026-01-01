@@ -7,6 +7,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    open-in-view: true
     show-sql: false
     properties:
       hibernate:
@@ -29,3 +30,9 @@ management:
   endpoint:
     health:
       show-details: always
+
+# JWT settings used by /api/auth/login to generate tokens.
+# NOTE: HS512 requires a secret key of at least 64+ characters.
+jwt:
+  secret: "abczreAminZahryzheraXhreurabczreAminZahryzheraXhreurabczreAminZahryzheraXhreurabczreAminZahryzheraXhreur"
+  expiration: 3600000

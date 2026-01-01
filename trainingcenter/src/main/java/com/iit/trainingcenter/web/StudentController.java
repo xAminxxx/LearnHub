@@ -54,7 +54,7 @@ public class StudentController {
             return "students/form";
         }
         student.setSpecialization(specializationService.getSpecializationById(specializationId));
-        studentService.saveStudent(student);
+        studentService.createStudent(student);
         return "redirect:/students";
     }
 
@@ -76,7 +76,7 @@ public class StudentController {
         }
         student.setId(id);
         student.setSpecialization(specializationService.getSpecializationById(specializationId));
-        studentService.saveStudent(student);
+        studentService.createStudent(student);
         return "redirect:/students";
     }
 

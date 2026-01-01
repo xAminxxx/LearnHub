@@ -26,15 +26,15 @@ public class Specialization {
     private String description;
 
     @OneToMany(mappedBy = "specialization", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference("course-specialization")
     private List<Course> courses = new ArrayList<>();
 
     @OneToMany(mappedBy = "specialization", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference("student-specialization")
     private List<Student> students = new ArrayList<>();
 
     @OneToMany(mappedBy = "specialization", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference("trainer-specialization")
     private List<Trainer> trainers = new ArrayList<>();
 
     public int getCourseCount() {

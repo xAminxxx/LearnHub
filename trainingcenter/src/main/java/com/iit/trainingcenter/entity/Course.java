@@ -1,5 +1,7 @@
 package com.iit.trainingcenter.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,31 +23,37 @@ public class Course {
     @Column(nullable = false, unique = true)
     private String code;
 
-    @Column(nullable = false)
-    private String title;
+    // DB compatibility: some existing schemas use `title` instead of `name`.
+    // Keeping the Java property as `name` avoids breaking the codebase while
+    // ensuring Hibernate writes to the required `title` column.
+    @Column(name = "title", nullable = false)
+    private String name;
 
     @Column(length = 1000)
     private String description;
 
-    @Column(nullable = false)
-    private Integer credits;
+    @Column(name = "credit", nullable = false)
+    private int credit;
 
     @Column(nullable = false)
-    private Integer maxStudents;
+    private int maxStudents;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainer_id", nullable = false)
+    @JsonBackReference("course-trainer")
     private Trainer trainer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialization_id", nullable = false)
+    @JsonBackReference("course-specialization")
     private Specialization specialization;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("course-enrollment")
     private List<Enrollment> enrollments = new ArrayList<>();
 
     public String getFullName() {
-        return code + " - " + title;
+        return code + " - " + name;
     }
 
     public int getEnrolledStudentsCount() {

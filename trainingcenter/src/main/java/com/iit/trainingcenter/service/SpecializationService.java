@@ -22,7 +22,21 @@ public class SpecializationService {
         return specializationRepository.findById(id).orElse(null);
     }
 
-    public Specialization saveSpecialization(Specialization specialization) {
+    public Specialization createSpecialization(Specialization specialization) {
         return specializationRepository.save(specialization);
+    }
+
+    public Specialization updateSpecialization(Long id, Specialization specializationDetails) {
+        Specialization specialization = specializationRepository.findById(id).orElse(null);
+        if (specialization != null) {
+            specialization.setName(specializationDetails.getName());
+            specialization.setDescription(specializationDetails.getDescription());
+            return specializationRepository.save(specialization);
+        }
+        return null;
+    }
+
+    public void deleteSpecialization(Long id) {
+        specializationRepository.deleteById(id);
     }
 }
