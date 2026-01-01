@@ -26,13 +26,18 @@ public class CourseService {
     }
 
     public Course updateCourse(Long id, Course courseDetails) {
-        Course course = courseRepository.findById(id).orElse(null);
-        if (course != null) {
-            course.setName(courseDetails.getName());
-            course.setCredit(courseDetails.getCredit());
-            return courseRepository.save(course);
-        }
-        return null;
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found: " + id));
+
+        course.setCode(courseDetails.getCode());
+        course.setName(courseDetails.getName());
+        course.setDescription(courseDetails.getDescription());
+        course.setCredit(courseDetails.getCredit());
+        course.setMaxStudents(courseDetails.getMaxStudents());
+        course.setTrainer(courseDetails.getTrainer());
+        course.setSpecialization(courseDetails.getSpecialization());
+
+        return courseRepository.save(course);
     }
 
     public void deleteCourse(Long id) {

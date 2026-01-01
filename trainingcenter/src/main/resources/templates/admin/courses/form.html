@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout}">
+
+<div th:fragment="content">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h3 mb-1" th:text="${course.id == null} ? 'New Course' : 'Edit Course'">Course</h1>
+      <div class="text-secondary">Fill course information</div>
+    </div>
+    <a class="btn btn-outline-secondary" th:href="@{/admin/courses}">Back</a>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form th:action="${course.id == null} ? @{/admin/courses} : @{/admin/courses/{id}(id=${course.id})}"
+            th:object="${course}"
+            method="post" class="row g-3">
+
+        <div class="col-md-4">
+          <label class="form-label">Code</label>
+          <input class="form-control" type="text" th:field="*{code}">
+        </div>
+
+        <div class="col-md-8">
+          <label class="form-label">Title</label>
+          <input class="form-control" type="text" th:field="*{name}">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Credit</label>
+          <input class="form-control" type="number" min="0" th:field="*{credit}">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Max students</label>
+          <input class="form-control" type="number" min="0" th:field="*{maxStudents}">
+        </div>
+
+        <div class="col-md-12">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" rows="3" th:field="*{description}"></textarea>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Trainer</label>
+          <select class="form-select" name="trainerId" required>
+            <option value="" disabled th:selected="${course.trainer == null}">Choose...</option>
+            <option th:each="t : ${trainers}"
+                    th:value="${t.id}"
+                    th:selected="${course.trainer != null && t.id == course.trainer.id}"
+                    th:text="${t.fullName}">Trainer</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Specialization</label>
+          <select class="form-select" name="specializationId" required>
+            <option value="" disabled th:selected="${course.specialization == null}">Choose...</option>
+            <option th:each="sp : ${specializations}"
+                    th:value="${sp.id}"
+                    th:selected="${course.specialization != null && sp.id == course.specialization.id}"
+                    th:text="${sp.name}">Spec</option>
+          </select>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-primary" type="submit">Save</button>
+          <a class="btn btn-outline-secondary" th:href="@{/admin/courses}">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+</html>

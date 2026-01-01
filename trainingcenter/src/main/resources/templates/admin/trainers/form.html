@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout}">
+
+<div th:fragment="content">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h3 mb-1" th:text="${trainerId == null} ? 'New Trainer' : 'Edit Trainer'">Trainer</h1>
+      <div class="text-secondary">Fill trainer information</div>
+    </div>
+    <a class="btn btn-outline-secondary" th:href="@{/admin/trainers}">Back</a>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form th:action="${trainerId == null} ? @{/admin/trainers} : @{/admin/trainers/{id}(id=${trainerId})}"
+            th:object="${form}"
+            method="post" class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label">First name</label>
+          <input class="form-control" type="text" th:field="*{firstName}">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Last name</label>
+          <input class="form-control" type="text" th:field="*{lastName}">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Email</label>
+          <input class="form-control" type="email" th:field="*{email}">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Phone</label>
+          <input class="form-control" type="text" th:field="*{phone}">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Hire date</label>
+          <input class="form-control" type="date" th:field="*{hireDate}">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Specialization</label>
+          <select class="form-select" th:field="*{specializationId}" required>
+            <option value="" disabled>Choose...</option>
+            <option th:each="sp : ${specializations}" th:value="${sp.id}" th:text="${sp.name}">
+              Spec
+            </option>
+          </select>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Bio</label>
+          <textarea class="form-control" rows="3" th:field="*{bio}"></textarea>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-primary" type="submit">Save</button>
+          <a class="btn btn-outline-secondary" th:href="@{/admin/trainers}">Cancel</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+</html>
