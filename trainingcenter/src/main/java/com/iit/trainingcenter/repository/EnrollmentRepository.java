@@ -10,10 +10,13 @@ import java.util.Optional;
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
 	@Override
-	@EntityGraph(attributePaths = {"student", "course"})
+	@EntityGraph(attributePaths = { "student", "course" })
 	List<Enrollment> findAll();
 
 	@Override
-	@EntityGraph(attributePaths = {"student", "course"})
+	@EntityGraph(attributePaths = { "student", "course" })
 	Optional<Enrollment> findById(Long id);
+
+	@EntityGraph(attributePaths = { "student", "course" })
+	List<Enrollment> findByStudentId(Long studentId);
 }

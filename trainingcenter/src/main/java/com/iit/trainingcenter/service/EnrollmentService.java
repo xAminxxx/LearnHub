@@ -24,6 +24,11 @@ public class EnrollmentService {
         return enrollmentRepository.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public List<Enrollment> getStudentEnrollments(Long studentId) {
+        return enrollmentRepository.findByStudentId(studentId);
+    }
+
     public Enrollment createEnrollment(Enrollment enrollment) {
         return enrollmentRepository.save(enrollment);
     }
