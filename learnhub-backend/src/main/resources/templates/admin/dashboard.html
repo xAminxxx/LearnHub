@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: html(content=~{::content})}">
+
+<div th:fragment="content">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold">Platform Overview</h2>
+            <p class="text-secondary">Track your academy performance and manage resources.</p>
+        </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card h-100 border-start border-4 border-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="p-2 bg-primary bg-opacity-10 rounded text-primary">
+                            <i class="bi bi-people fill" style="font-size: 1.5rem;"></i>
+                        </div>
+                        <span class="badge bg-success bg-opacity-10 text-success">+12%</span>
+                    </div>
+                    <h6 class="text-secondary mb-1">Total Students</h6>
+                    <h3 class="fw-bold mb-0" th:text="${studentCount}">1,280</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card h-100 border-start border-4 border-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="p-2 bg-info bg-opacity-10 rounded text-info">
+                            <i class="bi bi-person-badge" style="font-size: 1.5rem;"></i>
+                        </div>
+                    </div>
+                    <h6 class="text-secondary mb-1">Total Trainers</h6>
+                    <h3 class="fw-bold mb-0" th:text="${trainerCount}">45</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card h-100 border-start border-4 border-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="p-2 bg-warning bg-opacity-10 rounded text-warning">
+                            <i class="bi bi-book" style="font-size: 1.5rem;"></i>
+                        </div>
+                    </div>
+                    <h6 class="text-secondary mb-1">Active Courses</h6>
+                    <h3 class="fw-bold mb-0" th:text="${courseCount}">124</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card h-100 border-start border-4 border-danger">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="p-2 bg-danger bg-opacity-10 rounded text-danger">
+                            <i class="bi bi-briefcase" style="font-size: 1.5rem;"></i>
+                        </div>
+                    </div>
+                    <h6 class="text-secondary mb-1">Enrollments</h6>
+                    <h3 class="fw-bold mb-0" th:text="${enrollmentCount}">3.4K</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secondary Stats & Info -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="fw-bold mb-0">Quick Management</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded text-center">
+                                <i class="bi bi-plus-circle text-primary d-block mb-2" style="font-size: 1.5rem;"></i>
+                                <a th:href="@{/admin/students/new}" class="stretched-link text-decoration-none text-dark fw-medium">Add Student</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded text-center">
+                                <i class="bi bi-journal-plus text-info d-block mb-2" style="font-size: 1.5rem;"></i>
+                                <a th:href="@{/admin/courses/new}" class="stretched-link text-decoration-none text-dark fw-medium">Add Course</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 border rounded text-center">
+                                <i class="bi bi-tags text-warning d-block mb-2" style="font-size: 1.5rem;"></i>
+                                <a th:href="@{/admin/specializations/new}" class="stretched-link text-decoration-none text-dark fw-medium">Add Specialty</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card h-100 bg-primary text-white border-0 shadow-sm overflow-hidden">
+                <div class="card-body position-relative z-1">
+                    <h5 class="fw-bold">API Access</h5>
+                    <p class="small opacity-75">Your endpoints are live and ready for the Angular frontend.</p>
+                    <hr class="opacity-25">
+                    <div class="d-grid gap-2">
+                        <a href="/swagger-ui.html" class="btn btn-light btn-sm fw-bold">Open Swagger UI</a>
+                        <a href="/api/students" class="btn btn-outline-light btn-sm border-0">Raw JSON Feed</a>
+                    </div>
+                </div>
+                <!-- Decorative Circle -->
+                <div class="position-absolute bg-white opacity-10 rounded-circle" style="width: 200px; height: 200px; top: -50px; right: -50px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

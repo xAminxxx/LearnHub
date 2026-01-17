@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: html(content=~{::content})}">
+
+<div th:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1" th:text="${trainerId == null} ? 'Recruit New Faculty Member' : 'Update Instructor Profile'">Trainer</h2>
+                    <p class="text-secondary mb-0">Fill in the professional profile for our teaching staff.</p>
+                </div>
+                <a class="btn btn-outline-secondary btn-sm rounded-pill px-3" th:href="@{/admin/trainers}">
+                    <i class="bi bi-arrow-left me-1"></i> Staff Directory
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <form th:action="${trainerId == null} ? @{/admin/trainers} : @{/admin/trainers/{id}(id=${trainerId})}"
+                          th:object="${form}"
+                          method="post" class="row g-4">
+
+                        <div class="col-12 border-bottom pb-2 mb-2 text-primary">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-person-badge-fill me-2"></i>Professional Identification</h5>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">First Name</label>
+                            <input class="form-control" type="text" th:field="*{firstName}" placeholder="e.g. Alan">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Last Name</label>
+                            <input class="form-control" type="text" th:field="*{lastName}" placeholder="e.g. Turing">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Work Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-envelope text-secondary"></i></span>
+                                <input class="form-control border-start-0" type="email" th:field="*{email}" placeholder="trainer@learnhub.com">
+                            </div>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Contact Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-telephone text-secondary"></i></span>
+                                <input class="form-control border-start-0" type="text" th:field="*{phone}" placeholder="+00 000 000 000">
+                            </div>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Department Assignment</label>
+                            <select class="form-select bg-light border-0" th:field="*{specializationId}" required>
+                                <option value="" disabled selected>Select specialization...</option>
+                                <option th:each="sp : ${specializations}" th:value="${sp.id}" th:text="${sp.name}">Specialization</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Hire Date</label>
+                            <input class="form-control bg-light border-0" type="date" th:field="*{hireDate}">
+                        </div>
+
+                        <div class="col-12 mt-4 text-primary">
+                            <h5 class="fw-bold mb-0 border-bottom pb-2 mb-3"><i class="bi bi-card-text me-2"></i>Staff Biography</h5>
+                            <textarea class="form-control bg-light border-0" rows="5" th:field="*{bio}" placeholder="Short professional summary, expertise, and research interests..."></textarea>
+                            <div class="text-secondary small mt-2">Maximum 1000 characters. This bio will assist students in selecting their instructors.</div>
+                        </div>
+
+                        <div class="col-12 mt-5 pt-3 border-top">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary px-4 fw-bold shadow-sm" type="submit">
+                                    <i class="bi bi-shield-check me-1"></i> <span th:text="${trainerId == null} ? 'Confirm Recruitment' : 'Update Faculty Record'">Save</span>
+                                </button>
+                                <a class="btn btn-light px-4" th:href="@{/admin/trainers}">Discard Changes</a>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

@@ -1,0 +1,89 @@
+<div class="container-fluid px-0" *ngIf="!loading() && course() as c">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">{{ c.code }} • {{ c.title }}</h2>
+      <p class="text-secondary mb-0">Review course syllabus, credits, and assigned teaching faculty.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a routerLink="/courses" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+        <i class="bi bi-arrow-left me-1"></i> Catalog
+      </a>
+      <a [routerLink]="['/courses/edit', c.id]" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm">
+        <i class="bi bi-pencil-square me-1"></i> Edit Course
+      </a>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4 p-md-5">
+      <div class="row g-4">
+        <div class="col-md-8">
+          <h5 class="text-primary fw-bold mb-4 border-bottom pb-2">
+            <i class="bi bi-info-circle me-2"></i>Course Overview
+          </h5>
+          <div class="mb-4">
+            <h3 class="fw-bold text-dark mb-2">{{ c.title }}</h3>
+            <p class="text-secondary fs-5">{{ c.description }}</p>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <div class="p-3 bg-light rounded-3 border">
+                <div class="text-secondary small text-uppercase fw-bold mb-1">Academic Units</div>
+                <div class="fs-4 fw-bold text-indigo" style="color: #4f46e5;">{{ c.credit }} Credits</div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="p-3 bg-light rounded-3 border">
+                <div class="text-secondary small text-uppercase fw-bold mb-1">Max Capacity</div>
+                <div class="fs-4 fw-bold text-dark">{{ c.maxStudents }} Learners</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card border-0 bg-light p-3 rounded-4 mb-4" *ngIf="c.trainer">
+            <h6 class="text-secondary fw-bold text-uppercase small mb-3">Teaching Staff</h6>
+            <div class="d-flex align-items-center mb-3">
+              <img [src]="'https://ui-avatars.com/api/?name=' + c.trainer.firstName + '+' + c.trainer.lastName + '&background=random'" 
+                   class="rounded-circle me-3" width="50" height="50">
+              <div>
+                <div class="fw-bold text-dark">{{ c.trainer.firstName }} {{ c.trainer.lastName }}</div>
+                <div class="small text-secondary">{{ c.trainer.email }}</div>
+              </div>
+            </div>
+            <hr class="my-2 opacity-10">
+            <h6 class="text-secondary fw-bold text-uppercase small mb-2 mt-2" *ngIf="c.specialization">Department</h6>
+            <div class="d-flex align-items-center gap-2" *ngIf="c.specialization">
+              <i class="bi bi-building text-indigo" style="color: #4f46e5;"></i>
+              <span class="fw-medium text-dark">{{ c.specialization.name }}</span>
+            </div>
+          </div>
+
+          <div class="card border-0 p-3 rounded-4" style="background-color: rgba(79, 70, 229, 0.1);">
+            <h6 class="fw-bold text-uppercase small mb-2" style="color: #4f46e5;">Internal Metadata</h6>
+            <div class="small d-flex justify-content-between mb-1">
+              <span class="text-secondary">System ID:</span>
+              <span class="fw-bold">#{{ c.id }}</span>
+            </div>
+            <div class="small d-flex justify-content-between">
+              <span class="text-secondary">Catalog Code:</span>
+              <span class="fw-bold">{{ c.code }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading()" class="text-center py-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div *ngIf="errorMessage()" class="alert alert-danger mx-4">
+  {{ errorMessage() }}
+</div>

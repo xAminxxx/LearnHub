@@ -26,7 +26,7 @@ services:
   # Spring Boot Application Service
   app:
     build:
-      context: ./trainingcenter
+      context: ./learnhub-backend
       dockerfile: ../Dockerfile
     container_name: training-center-app
     restart: unless-stopped
@@ -38,7 +38,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: app
       # Clean up: Removed MySQL8Dialect (Hibernate 6 handles this automatically)
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
-      SPRING_JPA_OPEN_IN_VIEW: "false"
+      SPRING_JPA_OPEN_IN_VIEW: "true"
 
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: "false"
@@ -59,7 +59,7 @@ services:
     command: ["java", "-jar", "/app.jar"]
     healthcheck:
       test:
-        ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+        ["CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3

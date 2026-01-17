@@ -5,41 +5,53 @@ This folder contains comprehensive technical documentation for the LearnHub Trai
 ## 📋 Documentation Index
 
 ### 1. [Use Case Diagram](01-use-case-diagram.md)
+
 Visual representation of system actors and their interactions:
+
 - Admin use cases (CRUD operations, dashboard)
 - Trainer use cases (course management, grading)
 - Student use cases (enrollment, viewing grades)
 - Guest use cases (browsing, registration)
 
 ### 2. [Class Diagram](02-class-diagram.md)
+
 Object-oriented design showing all entities and their relationships:
+
 - Core entities: User, Specialization, Trainer, Student, Course, Enrollment
 - Enumerations: Role, EnrollmentStatus
 - Methods and properties for each class
 
 ### 3. [Sequence Diagrams](03-sequence-diagram.md)
+
 Flow of interactions between system components:
+
 - Student enrollment process
 - JWT authentication flow
 - Admin CRUD operations
 - Grade assignment workflow
 
 ### 4. [Entity-Relationship Diagram](04-er-diagram.md)
+
 Database schema and table relationships:
+
 - All database tables with columns and types
 - Foreign key relationships
 - Unique constraints and indexes
 - Database design decisions
 
 ### 5. [Architecture Diagram](05-architecture-diagram.md)
+
 System architecture and component organization:
+
 - Layered architecture (Presentation, Controller, Service, Repository)
 - Security layer integration
 - Cross-cutting concerns
 - Technology stack details
 
 ### 6. [Deployment Diagram](06-deployment-diagram.md)
+
 Infrastructure and deployment configuration:
+
 - Docker container architecture
 - Network topology
 - Port mappings and health checks
@@ -47,7 +59,9 @@ Infrastructure and deployment configuration:
 - Environment configurations
 
 ### 7. [API Documentation](07-api-documentation.md)
+
 Complete REST API reference:
+
 - Authentication endpoints
 - CRUD operations for all entities
 - Request/response examples
@@ -56,6 +70,7 @@ Complete REST API reference:
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Java 17+
 - Maven 3.6+
 - Docker & Docker Compose
@@ -64,29 +79,33 @@ Complete REST API reference:
 ### Running the Application
 
 1. **Start Database:**
+
 ```bash
 cd LearnHub
 docker compose up db phpmyadmin -d
 ```
 
-2. **Run Spring Boot:**
+2. **Run Spring Boot (Local):**
+
 ```bash
-cd trainingcenter
-mvn spring-boot:run
+cd learnhub-backend
+./mvnw spring-boot:run
 ```
 
 3. **Access Applications:**
-- Main App: http://localhost:8081
-- Admin Dashboard: http://localhost:8081/admin
-- Swagger UI: http://localhost:8081/swagger-ui.html
-- phpMyAdmin: http://localhost:8082
+
+- **Local Run:** http://localhost:8081
+- **Docker Run:** http://localhost:8085
+- **Admin Dashboard:** /admin
+- **Swagger UI:** http://localhost:8081/swagger-ui/index.html
+- **phpMyAdmin:** http://localhost:8082
 
 ## 🏗️ Project Structure
 
 ```
 LearnHub/
-├── documentation2/          # This documentation folder
-├── trainingcenter/          # Spring Boot application
+├── documentation/           # This documentation folder
+├── learnhub-backend/        # Spring Boot application
 │   ├── src/main/java/
 │   │   └── com/iit/trainingcenter/
 │   │       ├── config/      # Security, Web config
@@ -101,6 +120,7 @@ LearnHub/
 │       ├── application.yml
 │       ├── templates/       # Thymeleaf HTML templates
 │       └── static/          # CSS, JS files
+├── learnhub-frontend/       # Angular 18+ Application
 ├── docker-compose.yml
 └── Dockerfile
 ```
@@ -121,14 +141,17 @@ LearnHub/
 ## 📊 Default Credentials
 
 **Admin:**
+
 - Username: `admin`
 - Password: `password`
 
 **Trainer:**
+
 - Username: `trainer`
 - Password: `password`
 
 **Student:**
+
 - Username: `student`
 - Password: `password`
 

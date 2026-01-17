@@ -1,0 +1,115 @@
+<div class="container-fluid px-0">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">Academic Curriculum</h2>
+      <p class="text-secondary mb-0">Manage course catalogs, credits, and department assignments.</p>
+    </div>
+    <a routerLink="/courses/new" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+      <i class="bi bi-journal-plus"></i> <span>Add New Course</span>
+    </a>
+  </div>
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-3">
+      <div class="row g-3">
+        <div class="col-md-9">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0 text-secondary">
+              <i class="bi bi-search"></i>
+            </span>
+            <input class="form-control border-start-0 ps-0" type="text" 
+                   placeholder="Search by title, code, trainer or specialization..."
+                   (input)="onSearch(courseSearch.value)" #courseSearch>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-dark w-100 fw-medium">Global Search</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading()" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage()" class="alert alert-danger" role="alert">
+    {{ errorMessage() }}
+  </div>
+
+  <div *ngIf="!loading() && !errorMessage()" class="card border-0 shadow-sm overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="bg-light text-secondary small fw-bold text-uppercase">
+          <tr>
+            <th class="ps-4 py-3">Course Details</th>
+            <th class="py-3">Credits</th>
+            <th class="py-3">Availability</th>
+            <th class="py-3">Instructor</th>
+            <th class="pe-4 py-3 text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let course of filteredCourses()">
+            <td class="ps-4 py-3">
+              <div class="d-flex align-items-center">
+                <div class="bg-indigo bg-opacity-10 text-indigo rounded-3 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; background-color: rgba(79, 70, 229, 0.1); color: #4f46e5;">
+                  <i class="bi bi-book-half"></i>
+                </div>
+                <div>
+                  <div class="fw-bold mb-0 text-dark">{{ course.title }}</div>
+                  <span class="badge bg-light text-secondary border small">{{ course.code }}</span>
+                  <span class="text-secondary small ms-2">{{ course.specialization?.name || 'Unassigned' }}</span>
+                </div>
+              </div>
+            </td>
+            <td class="py-3">
+              <div class="badge bg-light text-dark border px-3">{{ course.credit }} Units</div>
+            </td>
+            <td class="py-3">
+              <div class="d-flex align-items-center mb-1">
+                <span class="small fw-bold me-2">{{ course.enrolledStudentsCount || 0 }}/{{ course.maxStudents }}</span>
+                <span class="small text-secondary">Seats</span>
+              </div>
+              <div class="progress" style="height: 6px; width: 120px;">
+                <div class="progress-bar" role="progressbar" 
+                     [style.width.%]="(course.enrolledStudentsCount || 0) * 100 / course.maxStudents"
+                     [ngClass]="(course.enrolledStudentsCount || 0) >= course.maxStudents ? 'bg-danger' : 'bg-primary'"></div>
+              </div>
+            </td>
+            <td class="py-3">
+              <div class="d-flex align-items-center" *ngIf="course.trainer">
+                <img [src]="'https://ui-avatars.com/api/?name=' + course.trainer.firstName + '+' + course.trainer.lastName + '&background=random'" 
+                     class="rounded-circle me-2" width="24" height="24">
+                <span class="small fw-medium">{{ course.trainer.firstName }} {{ course.trainer.lastName }}</span>
+              </div>
+              <span class="small text-muted" *ngIf="!course.trainer">N/A</span>
+            </td>
+            <td class="pe-4 py-3 text-end">
+              <div class="btn-group shadow-sm bg-white rounded">
+                <a [routerLink]="['/courses', course.id]" class="btn btn-white btn-sm px-3 border" title="View Details">
+                  <i class="bi bi-eye text-primary"></i>
+                </a>
+                <a [routerLink]="['/courses/edit', course.id]" class="btn btn-white btn-sm px-3 border border-start-0" title="Edit">
+                  <i class="bi bi-pencil text-dark"></i>
+                </a>
+                <button (click)="deleteCourse(course.id)" class="btn btn-white btn-sm px-3 border border-start-0 text-danger" title="Delete">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="filteredCourses().length === 0">
+            <td colspan="5" class="text-center py-5">
+              <div class="text-secondary opacity-50">
+                <i class="bi bi-journal-x mb-3 d-block" style="font-size: 3rem;"></i>
+                <p class="mb-0">No courses listed in the curriculum.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

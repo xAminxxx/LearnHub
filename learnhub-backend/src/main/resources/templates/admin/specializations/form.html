@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: html(content=~{::content})}">
+
+<div th:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1" th:text="${specialization.id == null} ? 'Create Academic Track' : 'Refine Specialization'">Specialization</h2>
+                    <p class="text-secondary mb-0">Define the core attributes of this learning department.</p>
+                </div>
+                <a class="btn btn-outline-secondary btn-sm rounded-pill px-3" th:href="@{/admin/specializations}">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Archive
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <form th:action="${specialization.id == null} ? @{/admin/specializations} : @{/admin/specializations/{id}(id=${specialization.id})}"
+                          th:object="${specialization}"
+                          method="post" class="row g-4">
+
+                        <div class="col-12 border-bottom pb-2 mb-2">
+                            <h5 class="fw-bold text-primary mb-0"><i class="bi bi-tag-fill me-2"></i>Department Core</h5>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-medium">Specialization Name</label>
+                            <input class="form-control form-control-lg bg-light border-0" type="text" th:field="*{name}" placeholder="e.g. Artificial Intelligence & Data Science" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-medium">Curriculum Overview / Description</label>
+                            <textarea class="form-control bg-light border-0" rows="5" th:field="*{description}" placeholder="Outline the learning objectives and prerequisites..."></textarea>
+                            <div class="text-secondary small mt-1">This description will be visible to students in the course catalog.</div>
+                        </div>
+
+                        <div class="col-12 mt-5 pt-3 border-top">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary px-4 fw-bold shadow-sm" type="submit">
+                                    <i class="bi bi-check-lg me-1"></i> <span th:text="${specialization.id == null} ? 'Launch Specialty' : 'Update Department'">Save</span>
+                                </button>
+                                <a class="btn btn-light px-4" th:href="@{/admin/specializations}">Discard Changes</a>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

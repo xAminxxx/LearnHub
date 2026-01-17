@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: html(content=~{::content})}">
+
+<div th:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1" th:text="${student.id == null} ? 'Register New Student' : 'Edit Student Profile'">Student Record</h2>
+                    <p class="text-secondary mb-0">Complete the form below to update the academy database.</p>
+                </div>
+                <a class="btn btn-outline-secondary btn-sm rounded-pill px-3" th:href="@{/admin/students}">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Archive
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <form th:action="${student.id == null} ? @{/admin/students} : @{/admin/students/{id}(id=${student.id})}"
+                          th:object="${student}"
+                          method="post" class="row g-4">
+
+                        <div class="col-12 border-bottom pb-2 mb-2">
+                            <h5 class="fw-bold text-primary mb-0"><i class="bi bi-person-workspace me-2"></i>Personal Details</h5>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">First Name</label>
+                            <input class="form-control" type="text" th:field="*{firstName}" placeholder="e.g. John">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Last Name</label>
+                            <input class="form-control" type="text" th:field="*{lastName}" placeholder="e.g. Doe">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="bi bi-envelope text-secondary"></i></span>
+                                <input class="form-control" type="email" th:field="*{email}" placeholder="john.doe@example.com">
+                            </div>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Phone Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="bi bi-phone text-secondary"></i></span>
+                                <input class="form-control" type="text" th:field="*{phone}" placeholder="+00 000 000 000">
+                            </div>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Birth Date</label>
+                            <input class="form-control" type="date" th:field="*{birthDate}">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></div>
+                        </div>
+
+                        <div class="col-12 mt-5 border-bottom pb-2 mb-2">
+                            <h5 class="fw-bold text-primary mb-0"><i class="bi bi-mortarboard me-2"></i>Academic Record</h5>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Specialization / Department</label>
+                            <select class="form-select bg-light border-0" name="specializationId" required>
+                                <option value="" disabled th:selected="${student.specialization == null}">Select a specialization...</option>
+                                <option th:each="sp : ${specializations}"
+                                        th:value="${sp.id}"
+                                        th:selected="${student.specialization != null and sp.id == student.specialization.id}"
+                                        th:text="${sp.name}">Spec</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Enrollment Date</label>
+                            <input class="form-control" type="date" th:field="*{enrollmentDate}">
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('enrollmentDate')}" th:errors="*{enrollmentDate}"></div>
+                        </div>
+
+                        <div class="col-12 mt-5 pt-3 border-top">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary px-4 fw-bold shadow-sm" type="submit">
+                                    <i class="bi bi-check-lg me-1"></i> <span th:text="${student.id == null} ? 'Create Student' : 'Update Record'">Save</span>
+                                </button>
+                                <a class="btn btn-light px-4" th:href="@{/admin/students}">Discard Changes</a>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

@@ -1,0 +1,40 @@
+import { Routes } from '@angular/router';
+import { StudentListComponent } from './components/students/student-list.component';
+import { StudentFormComponent } from './components/students/student-form.component';
+import { StudentDetailComponent } from './components/students/student-detail.component';
+import { CourseListComponent } from './components/courses/course-list.component';
+import { CourseFormComponent } from './components/courses/course-form.component';
+import { CourseDetailComponent } from './components/courses/course-detail.component';
+import { TrainerListComponent } from './components/trainers/trainer-list.component';
+import { TrainerFormComponent } from './components/trainers/trainer-form.component';
+import { TrainerDetailComponent } from './components/trainers/trainer-detail.component';
+import { SpecializationListComponent } from './components/specializations/specialization-list.component';
+import { SpecializationFormComponent } from './components/specializations/specialization-form.component';
+import { EnrollmentListComponent } from './components/enrollments/enrollment-list.component';
+import { EnrollmentFormComponent } from './components/enrollments/enrollment-form.component';
+import { EnrollmentDetailComponent } from './components/enrollments/enrollment-detail.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+
+export const routes: Routes = [
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'students', component: StudentListComponent },
+  { path: 'students/new', component: StudentFormComponent },
+  { path: 'students/edit/:id', component: StudentFormComponent },
+  { path: 'students/:id', component: StudentDetailComponent },
+  { path: 'courses', component: CourseListComponent },
+  { path: 'courses/new', component: CourseFormComponent },
+  { path: 'courses/edit/:id', component: CourseFormComponent },
+  { path: 'courses/:id', component: CourseDetailComponent },
+  { path: 'trainers', component: TrainerListComponent },
+  { path: 'trainers/new', component: TrainerFormComponent },
+  { path: 'trainers/edit/:id', component: TrainerFormComponent },
+  { path: 'trainers/:id', component: TrainerDetailComponent },
+  { path: 'specializations', component: SpecializationListComponent },
+  { path: 'specializations/new', component: SpecializationFormComponent },
+  { path: 'specializations/edit/:id', component: SpecializationFormComponent },
+  { path: 'enrollments', component: EnrollmentListComponent },
+  { path: 'enrollments/new', component: EnrollmentFormComponent },
+  { path: 'enrollments/edit/:id', component: EnrollmentFormComponent },
+  { path: 'enrollments/:id', component: EnrollmentDetailComponent },
+];

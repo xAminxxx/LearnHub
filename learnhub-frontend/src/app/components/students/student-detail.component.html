@@ -1,0 +1,103 @@
+<div class="container-fluid px-0" *ngIf="!loading() && student() as s">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">Student Profile</h2>
+      <p class="text-secondary mb-0">Detailed information and academic record for <span class="fw-bold text-dark">{{ s.firstName }} {{ s.lastName }}</span>.</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a routerLink="/students" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+        <i class="bi bi-arrow-left me-1"></i> Back
+      </a>
+      <a [routerLink]="['/students/edit', s.id]" class="btn btn-primary btn-sm rounded-pill px-3">
+        <i class="bi bi-pencil-square me-1"></i> Edit Profile
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column: Personal Info Card -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm text-center p-4">
+        <div class="mx-auto mb-3 bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+          <span class="fs-2 fw-bold">{{ s.firstName.charAt(0) }}{{ s.lastName.charAt(0) }}</span>
+        </div>
+        <h4 class="fw-bold mb-1">{{ s.firstName }} {{ s.lastName }}</h4>
+        <p class="text-secondary small mb-4">Student ID: #{{ s.id }}</p>
+        
+        <div class="text-start border-top pt-4">
+          <div class="mb-3">
+            <label class="text-secondary small text-uppercase fw-bold mb-1">Email Address</label>
+            <div class="fw-medium text-break">{{ s.email }}</div>
+          </div>
+          <div class="mb-3">
+            <label class="text-secondary small text-uppercase fw-bold mb-1">Phone Number</label>
+            <div class="fw-medium">{{ s.phone }}</div>
+          </div>
+          <div class="mb-0">
+            <label class="text-secondary small text-uppercase fw-bold mb-1">Department</label>
+            <div class="badge bg-indigo bg-opacity-10 text-indigo border border-indigo border-opacity-25" style="color: #4f46e5;">
+              {{ s.specialization?.name || 'Unassigned' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Academic Details & Stats -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-0 pt-4 px-4">
+          <h5 class="fw-bold mb-0">Academic Record</h5>
+        </div>
+        <div class="card-body p-4">
+          <div class="row g-4 overflow-hidden">
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-3 d-flex align-items-center">
+                <div class="bg-white p-2 rounded-circle me-3 text-success shadow-sm">
+                  <i class="bi bi-calendar-event fs-4"></i>
+                </div>
+                <div>
+                  <div class="text-secondary small">Enrollment Date</div>
+                  <div class="fw-bold">{{ s.enrollmentDate | date:'MMMM dd, yyyy' }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-3 d-flex align-items-center">
+                <div class="bg-white p-2 rounded-circle me-3 text-warning shadow-sm">
+                  <i class="bi bi-balloon fs-4"></i>
+                </div>
+                <div>
+                  <div class="text-secondary small">Date of Birth</div>
+                  <div class="fw-bold">{{ s.birthDate | date:'MMMM dd, yyyy' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <h6 class="fw-bold mb-3 border-bottom pb-2">Course Summary</h6>
+            <div class="alert alert-info border-0 bg-opacity-10 d-flex">
+              <i class="bi bi-info-circle-fill me-3"></i> 
+              <div>
+                This student is currently active in their assigned specialization. Visit the 
+                <a routerLink="/enrollments" class="fw-bold text-decoration-none">Enrollments</a> 
+                section to manage their active courses.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading()" class="text-center py-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div *ngIf="errorMessage()" class="alert alert-danger mx-4">
+  {{ errorMessage() }}
+</div>

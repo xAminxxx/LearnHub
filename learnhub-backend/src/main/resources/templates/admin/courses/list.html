@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: html(content=~{::content})}">
+
+<div th:fragment="content">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Academic Curriculum</h2>
+            <p class="text-secondary mb-0">Manage course catalogs, credits, and department assignments.</p>
+        </div>
+        <a class="btn btn-primary d-flex align-items-center gap-2 shadow-sm" th:href="@{/admin/courses/new}">
+            <i class="bi bi-journal-plus"></i> <span>Add New Course</span>
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4 py-3 text-secondary small fw-bold text-uppercase">Course Details</th>
+                        <th class="py-3 text-secondary small fw-bold text-uppercase">Credits</th>
+                        <th class="py-3 text-secondary small fw-bold text-uppercase">Availability</th>
+                        <th class="py-3 text-secondary small fw-bold text-uppercase">Instructor</th>
+                        <th class="pe-4 py-3 text-secondary small fw-bold text-uppercase text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    <tr th:each="c : ${courses}">
+                        <td class="ps-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-indigo bg-opacity-10 text-indigo rounded-3 p-2 me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; color: #4f46e5;">
+                                    <i class="bi bi-book-half"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold mb-0 text-dark" th:text="${c.name}">Java Programming</div>
+                                    <span class="badge bg-light text-secondary border small" th:text="${c.code}">CS101</span>
+                                    <span class="text-secondary small ms-2" th:text="${c.specialization != null ? c.specialization.name : 'Unassigned'}">CS</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3">
+                            <div class="badge bg-light text-dark border px-3" th:text="${c.credit + ' Units'}">3 Units</div>
+                        </td>
+                        <td class="py-3">
+                            <div class="d-flex align-items-center mb-1">
+                                <span class="small fw-bold me-2" th:text="${c.enrolledStudentsCount + '/' + c.maxStudents}">15/30</span>
+                                <span class="small text-secondary">Seats</span>
+                            </div>
+                            <div class="progress" style="height: 6px; width: 120px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     th:style="'width: ' + (${c.enrolledStudentsCount} * 100 / ${c.maxStudents}) + '%'"
+                                     th:classappend="${c.enrolledStudentsCount >= c.maxStudents ? 'bg-danger' : 'bg-primary'}"></div>
+                            </div>
+                        </td>
+                        <td class="py-3">
+                            <div class="d-flex align-items-center">
+                                <img th:src="'https://ui-avatars.com/api/?name=' + ${c.trainer != null ? c.trainer.fullName : 'NA'} + '&background=random'" 
+                                     class="rounded-circle me-2" width="24" height="24">
+                                <span class="small fw-medium" th:text="${c.trainer != null ? c.trainer.fullName : 'N/A'}">Dr. Smith</span>
+                            </div>
+                        </td>
+                        <td class="pe-4 py-3 text-end">
+                            <div class="btn-group shadow-sm bg-white rounded">
+                                <a th:href="@{/admin/courses/{id}(id=${c.id})}" class="btn btn-white btn-sm px-3 border" title="View Details">
+                                    <i class="bi bi-eye text-primary"></i>
+                                </a>
+                                <a th:href="@{/admin/courses/{id}/edit(id=${c.id})}" class="btn btn-white btn-sm px-3 border border-start-0" title="Edit">
+                                    <i class="bi bi-pencil text-dark"></i>
+                                </a>
+                                <form th:action="@{/admin/courses/{id}/delete(id=${c.id})}" method="post" class="d-inline"
+                                      onsubmit="return confirm('Archive this course? It will not delete enrollments.');">
+                                    <button class="btn btn-white btn-sm px-3 border border-start-0 text-danger" type="submit" title="Delete">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(courses)}">
+                        <td colspan="5" class="text-center py-5">
+                            <div class="text-secondary opacity-50">
+                                <i class="bi bi-journal-x mb-3 d-block" style="font-size: 3rem;"></i>
+                                <p class="mb-0">No courses listed in the curriculum.</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</html>

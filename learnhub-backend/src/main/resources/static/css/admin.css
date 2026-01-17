@@ -1,0 +1,93 @@
+:root {
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --bg-main: #f8fafc;
+  --sidebar-bg: #1e293b;
+  --sidebar-text: #94a3b8;
+  --sidebar-active: #ffffff;
+  --card-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+body {
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-color: var(--bg-main);
+  color: #1e293b;
+}
+
+.sidebar {
+  background-color: var(--sidebar-bg);
+  min-height: 100vh;
+  width: 260px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  transition: all 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.sidebar-link:hover {
+  color: var(--sidebar-active);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-link.active {
+  color: var(--sidebar-active);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left-color: var(--primary-color);
+}
+
+.sidebar-link i {
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.main-content {
+  margin-left: 260px;
+  padding: 2rem;
+}
+
+.card {
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: var(--card-shadow);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.navbar-top {
+  background-color: white;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  margin-left: 260px;
+  padding: 0.75rem 2rem;
+}
+
+.stat-card {
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}

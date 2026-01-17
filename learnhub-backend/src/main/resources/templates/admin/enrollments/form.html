@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: html(content=~{::content})}">
+
+<div th:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1" th:text="${enrollment.id == null} ? 'Institutional Enrollment' : 'Academic Performance Update'">Admission Management</h2>
+                    <p class="text-secondary mb-0">Link students to courses, manage status, and update final scores.</p>
+                </div>
+                <a class="btn btn-outline-secondary btn-sm rounded-pill px-3" th:href="@{/admin/enrollments}">
+                    <i class="bi bi-arrow-left me-1"></i> Admission Records
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <form th:action="${enrollment.id == null} ? @{/admin/enrollments} : @{/admin/enrollments/{id}(id=${enrollment.id})}"
+                          th:object="${enrollment}"
+                          method="post" class="row g-4">
+
+                        <div class="col-12 border-bottom pb-2 mb-2 text-primary">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-link-45deg me-2"></i>Course Admission</h5>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Student / Candidate</label>
+                            <select class="form-select bg-light border-0 py-2" name="studentId" required>
+                                <option value="" disabled th:selected="${enrollment.student == null}">Locate student record...</option>
+                                <option th:each="s : ${students}"
+                                        th:value="${s.id}"
+                                        th:selected="${enrollment.student != null && s.id == enrollment.student.id}"
+                                        th:text="${s.fullName}">Student</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Designated Course</label>
+                            <select class="form-select bg-light border-0 py-2" name="courseId" required>
+                                <option value="" disabled th:selected="${enrollment.course == null}">Select target course...</option>
+                                <option th:each="c : ${courses}"
+                                        th:value="${c.id}"
+                                        th:selected="${enrollment.course != null && c.id == enrollment.course.id}"
+                                        th:text="${c.fullName}">Course</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-4 border-bottom pb-2 mb-2 text-primary">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-bar-chart-fill me-2"></i>Engagement & Performance</h5>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Current Status</label>
+                            <select class="form-select bg-light border-0 py-2" th:field="*{status}">
+                                <option th:each="st : ${statuses}" th:value="${st}" th:text="${st}">ACTIVE</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Academic Score (0.0 - 20.0)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-secondary"><i class="bi bi-star"></i></span>
+                                <input class="form-control border-start-0 py-2" type="number" step="0.1" min="0" max="20" th:field="*{score}" placeholder="e.g. 15.5">
+                            </div>
+                            <div class="small text-secondary mt-1">Leave empty if course is still in progress.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-medium">Administrative Notes / Internal Feedback</label>
+                            <textarea class="form-control bg-light border-0" rows="4" th:field="*{notes}" placeholder="Enter any specific feedback, attendance notes or special requirements..."></textarea>
+                        </div>
+
+                        <div class="col-12 mt-5 pt-3 border-top">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary px-4 fw-bold shadow-sm" type="submit">
+                                    <i class="bi bi-check2-circle me-1"></i> <span th:text="${enrollment.id == null} ? 'Process Enrollment' : 'Update Engagement'">Save</span>
+                                </button>
+                                <a class="btn btn-light px-4" th:href="@{/admin/enrollments}">Discard Changes</a>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

@@ -11,28 +11,16 @@ It supports both:
 
 ```
 LearnHub/
-├── trainingcenter/                         # Spring Boot application
+├── learnhub-backend/                       # Spring Boot application
 │   ├── mvnw / mvnw.cmd                     # Maven wrapper
 │   ├── pom.xml
 │   └── src/
-│       ├── main/
-│       │   ├── java/com/iit/trainingcenter/
-│       │   │   ├── TrainingCenterApplication.java
-│       │   │   ├── config/                 # Spring config (Security/Web/...)
-│       │   │   ├── entity/                 # JPA entities
-│       │   │   ├── repository/             # Spring Data repositories
-│       │   │   ├── service/                # Business logic
-│       │   │   ├── util/                   # Utilities / initial data
-│       │   │   ├── web/                    # MVC controllers (Thymeleaf pages)
-│       │   │   └── restcontroller/         # REST controllers (JSON API)
-│       │   └── resources/
-│       │       ├── application.yml
-│       │       ├── application-docker.yml
-│       │       └── templates/              # Thymeleaf templates
-│       └── test/
+├── learnhub-frontend/                      # Angular 18+ Application
+│   ├── package.json
+│   └── src/
 ├── docker-compose.yml                      # App + MySQL + phpMyAdmin
 ├── Dockerfile                              # Multi-stage build for Spring Boot app
-└── documentation/                          # UML diagrams and documentation
+└── documentation/                          # Technical diagrams and documentation
 ```
 
 ---
@@ -52,6 +40,7 @@ LearnHub/
 After cloning the project:
 
 docker compose up --build
+
 ```bash
 # from repo root
 docker compose up --build
@@ -70,12 +59,12 @@ docker compose up --build
 
 Once all services are running (wait ~30 seconds), open your browser:
 
-| Service | URL | Notes |
-| --- | --- | --- |
-| Web UI (Thymeleaf) | http://localhost:8085/students | Served by controllers in `web/` |
-| REST API | http://localhost:8085/api/students | Served by controllers in `restcontroller/` |
-| phpMyAdmin | http://localhost:8082 | MySQL UI |
-| MySQL | localhost:3306 | user/pass: `app` / `app` |
+| Service            | URL                                | Notes                                      |
+| ------------------ | ---------------------------------- | ------------------------------------------ |
+| Web UI (Thymeleaf) | http://localhost:8085/students     | Served by controllers in `web/`            |
+| REST API           | http://localhost:8085/api/students | Served by controllers in `restcontroller/` |
+| phpMyAdmin         | http://localhost:8082              | MySQL UI                                   |
+| MySQL              | localhost:3306                     | user/pass: `app` / `app`                   |
 
 ### Stop the Application
 
@@ -113,8 +102,16 @@ docker run -d --name training-db \
 ### Run Spring Boot
 
 ```bash
-cd trainingcenter
+cd learnhub-backend
 ./mvnw spring-boot:run
+```
+
+### Run Angular
+
+```bash
+cd learnhub-frontend
+npm install
+npm start
 ```
 
 By default it runs on http://localhost:8080 (unless you changed `server.port`).
@@ -123,8 +120,8 @@ By default it runs on http://localhost:8080 (unless you changed `server.port`).
 
 Both are served by the same Spring Boot app:
 
-- `trainingcenter/src/main/java/com/iit/trainingcenter/web` → Thymeleaf pages
-- `trainingcenter/src/main/java/com/iit/trainingcenter/restcontroller` → REST JSON endpoints
+- `learnhub-backend/src/main/java/com/iit/trainingcenter/web` → Thymeleaf pages
+- `learnhub-backend/src/main/java/com/iit/trainingcenter/restcontroller` → REST JSON endpoints
 
 Example:
 

@@ -1,0 +1,56 @@
+<div class="row justify-content-center">
+  <div class="col-lg-8 px-0">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h2 class="fw-bold mb-1">{{ isEditMode() ? 'Update Discipline' : 'Define Academic Branch' }}</h2>
+        <p class="text-secondary mb-0">Establish a new department or edit existing specialization parameters.</p>
+      </div>
+      <a class="btn btn-outline-secondary btn-sm rounded-pill px-3 text-decoration-none" routerLink="/specializations">
+        <i class="bi bi-arrow-left me-1"></i> Department Index
+      </a>
+    </div>
+
+    <div *ngIf="loading()" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm" *ngIf="!loading()">
+      <div class="card-body p-4 p-md-5">
+        <form [formGroup]="specForm" (ngSubmit)="onSubmit()" class="row g-4">
+          
+          <div class="col-12 border-bottom pb-2 mb-2 text-primary">
+            <h5 class="fw-bold mb-0"><i class="bi bi-tags-fill me-2"></i>Classification Details</h5>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-medium">Department Name</label>
+            <input class="form-control form-control-lg bg-light border-0" type="text" formControlName="name" 
+                   [class.is-invalid]="specForm.get('name')?.touched && specForm.get('name')?.invalid"
+                   placeholder="e.g. Data Science & Analytics">
+            <div class="invalid-feedback">Please provide a department name.</div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label fw-medium">Branch Description & Scope</label>
+            <textarea class="form-control bg-light border-0" rows="5" formControlName="description" 
+                      placeholder="Outline the domains, research areas, and goals of this specialization..."></textarea>
+          </div>
+
+          <div class="col-12 mt-5 pt-3 border-top">
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary px-4 fw-bold shadow-sm py-2 d-flex align-items-center" type="submit" [disabled]="submitting() || specForm.invalid">
+                <i class="bi bi-check2-circle me-2" *ngIf="!submitting()"></i>
+                <span class="spinner-border spinner-border-sm me-2" *ngIf="submitting()"></span>
+                <span>{{ isEditMode() ? 'Save Changes' : 'Publish Department' }}</span>
+              </button>
+              <a class="btn btn-light px-4 py-2 text-decoration-none" routerLink="/specializations">Discard</a>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

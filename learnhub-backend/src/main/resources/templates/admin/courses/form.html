@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/fragments/layout :: html(content=~{::content})}">
+
+<div th:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1" th:text="${course.id == null} ? 'Curriculum Design' : 'Modify Course Structure'">Course Management</h2>
+                    <p class="text-secondary mb-0">Define course parameters, credits, and select faculty instructors.</p>
+                </div>
+                <a class="btn btn-outline-secondary btn-sm rounded-pill px-3" th:href="@{/admin/courses}">
+                    <i class="bi bi-arrow-left me-1"></i> Course Inventory
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <form th:action="${course.id == null} ? @{/admin/courses} : @{/admin/courses/{id}(id=${course.id})}"
+                          th:object="${course}"
+                          method="post" class="row g-4">
+
+                        <div class="col-12 border-bottom pb-2 mb-2 text-primary">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-info-circle-fill me-2"></i>General Information</h5>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium">Unique Code</label>
+                            <input class="form-control form-control-lg bg-light border-0" type="text" th:field="*{code}" placeholder="e.g. JAVA-101" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <label class="form-label fw-medium">Course Title</label>
+                            <input class="form-control form-control-lg bg-light border-0" type="text" th:field="*{name}" placeholder="e.g. Advanced Java Microservices" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Academic Credits</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-secondary"><i class="bi bi-award"></i></span>
+                                <input class="form-control border-start-0" type="number" min="1" th:field="*{credit}" placeholder="0">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Maximum Enrollment Capacity</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-secondary"><i class="bi bi-people"></i></span>
+                                <input class="form-control border-start-0" type="number" min="1" th:field="*{maxStudents}" placeholder="30">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-medium">Course Description & Syllabus</label>
+                            <textarea class="form-control bg-light border-0" rows="4" th:field="*{description}" placeholder="Outline the course objectives and learning outcomes..."></textarea>
+                        </div>
+
+                        <div class="col-12 mt-4 border-bottom pb-2 mb-2 text-primary">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-diagram-3-fill me-2"></i>Academic Assignment</h5>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Primary Instructor / Trainer</label>
+                            <select class="form-select bg-light border-0" name="trainerId" required>
+                                <option value="" disabled th:selected="${course.trainer == null}">Assign a faculty member...</option>
+                                <option th:each="t : ${trainers}"
+                                        th:value="${t.id}"
+                                        th:selected="${course.trainer != null && t.id == course.trainer.id}"
+                                        th:text="${t.fullName}">Trainer</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-medium">Educational Department</label>
+                            <select class="form-select bg-light border-0" name="specializationId" required>
+                                <option value="" disabled th:selected="${course.specialization == null}">Designate a department...</option>
+                                <option th:each="sp : ${specializations}"
+                                        th:value="${sp.id}"
+                                        th:selected="${course.specialization != null && sp.id == course.specialization.id}"
+                                        th:text="${sp.name}">Spec</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-5 pt-3 border-top">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary px-4 fw-bold shadow-sm" type="submit">
+                                    <i class="bi bi-journal-check me-1"></i> <span th:text="${course.id == null} ? 'Publish Course' : 'Save Modifications'">Save</span>
+                                </button>
+                                <a class="btn btn-light px-4" th:href="@{/admin/courses}">Discard Changes</a>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

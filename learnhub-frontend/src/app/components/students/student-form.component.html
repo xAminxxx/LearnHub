@@ -1,0 +1,94 @@
+<div class="row justify-content-center">
+  <div class="col-lg-10 px-0">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h2 class="fw-bold mb-1">{{ isEditMode() ? 'Edit Student Profile' : 'Register New Student' }}</h2>
+        <p class="text-secondary mb-0">Complete the form below to update the academy database.</p>
+      </div>
+      <a class="btn btn-outline-secondary btn-sm rounded-pill px-3 text-decoration-none" routerLink="/students">
+        <i class="bi bi-arrow-left me-1"></i> Back to Archive
+      </a>
+    </div>
+
+    <div *ngIf="loading()" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm" *ngIf="!loading()">
+      <div class="card-body p-4 p-md-5">
+        <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="row g-4">
+          
+          <div class="col-12 border-bottom pb-2 mb-2">
+            <h5 class="fw-bold text-primary mb-0"><i class="bi bi-person-workspace me-2"></i>Personal Details</h5>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">First Name</label>
+            <input class="form-control" type="text" formControlName="firstName" placeholder="e.g. John"
+                   [class.is-invalid]="studentForm.get('firstName')?.touched && studentForm.get('firstName')?.invalid">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Last Name</label>
+            <input class="form-control" type="text" formControlName="lastName" placeholder="e.g. Doe"
+                   [class.is-invalid]="studentForm.get('lastName')?.touched && studentForm.get('lastName')?.invalid">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Email Address</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white"><i class="bi bi-envelope text-secondary"></i></span>
+              <input class="form-control" type="email" formControlName="email" placeholder="john.doe@example.com"
+                     [class.is-invalid]="studentForm.get('email')?.touched && studentForm.get('email')?.invalid">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Phone Number</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white"><i class="bi bi-phone text-secondary"></i></span>
+              <input class="form-control" type="text" formControlName="phone" placeholder="+00 000 000 000"
+                     [class.is-invalid]="studentForm.get('phone')?.touched && studentForm.get('phone')?.invalid">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Birth Date</label>
+            <input class="form-control" type="date" formControlName="birthDate">
+          </div>
+
+          <div class="col-12 mt-5 border-bottom pb-2 mb-2">
+            <h5 class="fw-bold text-primary mb-0"><i class="bi bi-mortarboard me-2"></i>Academic Record</h5>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Specialization / Department</label>
+            <select class="form-select bg-light border-0 py-2" formControlName="specializationId">
+              <option [ngValue]="null" disabled>Select a specialization...</option>
+              <option *ngFor="let sp of specializations()" [value]="sp.id">{{ sp.name }}</option>
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Enrollment Date</label>
+            <input class="form-control" type="date" formControlName="enrollmentDate">
+          </div>
+
+          <div class="col-12 mt-5 pt-3 border-top">
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary px-4 fw-bold shadow-sm py-2 d-flex align-items-center" type="submit" [disabled]="submitting() || studentForm.invalid">
+                <i class="bi bi-check-lg me-2" *ngIf="!submitting()"></i>
+                <span class="spinner-border spinner-border-sm me-2" *ngIf="submitting()"></span>
+                <span>{{ isEditMode() ? 'Update Record' : 'Create Student' }}</span>
+              </button>
+              <a class="btn btn-light px-4 py-2 text-decoration-none" routerLink="/students">Discard Changes</a>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

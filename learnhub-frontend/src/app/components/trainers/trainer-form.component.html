@@ -1,0 +1,92 @@
+<div class="row justify-content-center">
+  <div class="col-lg-10 px-0">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h2 class="fw-bold mb-1">{{ isEditMode() ? 'Update Instructor Profile' : 'Recruit New Faculty Member' }}</h2>
+        <p class="text-secondary mb-0">Fill in the professional profile for our teaching staff.</p>
+      </div>
+      <a class="btn btn-outline-secondary btn-sm rounded-pill px-3 text-decoration-none" routerLink="/trainers">
+        <i class="bi bi-arrow-left me-1"></i> Staff Directory
+      </a>
+    </div>
+
+    <div *ngIf="loading()" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm" *ngIf="!loading()">
+      <div class="card-body p-4 p-md-5">
+        <form [formGroup]="trainerForm" (ngSubmit)="onSubmit()" class="row g-4">
+          
+          <div class="col-12 border-bottom pb-2 mb-2 text-primary">
+            <h5 class="fw-bold mb-0"><i class="bi bi-person-badge-fill me-2"></i>Professional Identification</h5>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">First Name</label>
+            <input class="form-control" type="text" formControlName="firstName" placeholder="e.g. Alan"
+                   [class.is-invalid]="trainerForm.get('firstName')?.touched && trainerForm.get('firstName')?.invalid">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Last Name</label>
+            <input class="form-control" type="text" formControlName="lastName" placeholder="e.g. Turing"
+                   [class.is-invalid]="trainerForm.get('lastName')?.touched && trainerForm.get('lastName')?.invalid">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Work Email</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0"><i class="bi bi-envelope text-secondary"></i></span>
+              <input class="form-control border-start-0 py-2" type="email" formControlName="email" placeholder="trainer@learnhub.com"
+                     [class.is-invalid]="trainerForm.get('email')?.touched && trainerForm.get('email')?.invalid">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Contact Number</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0"><i class="bi bi-telephone text-secondary"></i></span>
+              <input class="form-control border-start-0 py-2" type="text" formControlName="phone" placeholder="+00 000 000 000"
+                     [class.is-invalid]="trainerForm.get('phone')?.touched && trainerForm.get('phone')?.invalid">
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Department Assignment</label>
+            <select class="form-select bg-light border-0 py-2" formControlName="specializationId">
+              <option [ngValue]="null" disabled>Select specialization...</option>
+              <option *ngFor="let sp of specializations()" [value]="sp.id">{{ sp.name }}</option>
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Hire Date</label>
+            <input class="form-control bg-light border-0 py-2" type="date" formControlName="hireDate">
+          </div>
+
+          <div class="col-12 mt-4 text-primary">
+            <h5 class="fw-bold mb-0 border-bottom pb-2 mb-3"><i class="bi bi-card-text me-2"></i>Staff Biography</h5>
+            <textarea class="form-control bg-light border-0" rows="5" formControlName="bio" 
+                      placeholder="Short professional summary, expertise, and research interests..."></textarea>
+            <div class="text-secondary small mt-2">Maximum 1000 characters. This bio will assist students in selecting their instructors.</div>
+          </div>
+
+          <div class="col-12 mt-5 pt-3 border-top">
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary px-4 fw-bold shadow-sm py-2 d-flex align-items-center" type="submit" [disabled]="submitting() || trainerForm.invalid">
+                <i class="bi bi-shield-check me-2" *ngIf="!submitting()"></i>
+                <span class="spinner-border spinner-border-sm me-2" *ngIf="submitting()"></span>
+                <span>{{ isEditMode() ? 'Update Faculty Record' : 'Confirm Recruitment' }}</span>
+              </button>
+              <a class="btn btn-light px-4 py-2 text-decoration-none" routerLink="/trainers">Discard Changes</a>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
