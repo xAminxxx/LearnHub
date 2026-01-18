@@ -60,3 +60,29 @@ graph TD
 ### Guest Use Cases
 - **UC19-UC20**: View public information
 - **UC21-UC22**: Authentication and registration
+
+### 2026 Frontend & Portal Features Update
+
+- **Role-based Portals:**
+  - Student, Trainer, and Admin each have dedicated dashboards and navigation.
+  - Auto-redirect on login based on user role (student → student dashboard, trainer → trainer dashboard, admin → admin dashboard).
+- **Student Portal:**
+  - Browse/search/filter courses, enroll, view/cancel enrollments, see grades and progress.
+  - Robust student matching logic for demo/testing.
+- **Trainer Portal:**
+  - See only their assigned courses and enrolled students.
+  - View course details, filter students by course, grade students, mark as completed.
+  - All grading and status changes update instantly in the UI.
+- **Admin Portal:**
+  - Full CRUD for all entities, plus ability to impersonate student/trainer views for testing.
+- **Navigation:**
+  - Sidebar adapts to user role.
+  - Admins can access both student and trainer portals for QA/demo.
+- **Security:**
+  - JWT-based authentication, role preserved across sessions.
+  - Demo users auto-detect role by username for seamless testing.
+- **UI/UX:**
+  - Modern Angular 18+ SPA, Bootstrap 5 styling, responsive design.
+  - Loading states, error/success alerts, and user-friendly forms throughout.
+
+> **Note:** All use cases in the diagram are now reflected in the live frontend, with real-time role-based access and workflows for each actor.
