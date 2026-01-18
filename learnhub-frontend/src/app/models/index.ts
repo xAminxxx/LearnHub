@@ -57,3 +57,5 @@ export interface Enrollment {
   score?: number;
   gradeType?: string;
 }
+
+export * from './auth.model';
