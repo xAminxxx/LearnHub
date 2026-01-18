@@ -1,0 +1,202 @@
+<div class="container-fluid px-0">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">
+        <i class="bi bi-collection text-primary me-2"></i>Course Catalog
+      </h2>
+      <p class="text-secondary mb-0">Browse and enroll in available courses.</p>
+    </div>
+    <a routerLink="/student/dashboard" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Alerts -->
+  <div *ngIf="successMessage()" class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle me-2"></i>{{ successMessage() }}
+    <button type="button" class="btn-close" (click)="successMessage.set('')"></button>
+  </div>
+
+  <div *ngIf="errorMessage()" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage() }}
+    <button type="button" class="btn-close" (click)="errorMessage.set('')"></button>
+  </div>
+
+  <!-- No Student Profile Warning -->
+  <div *ngIf="!loading() && !currentStudent()" class="alert alert-warning" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    <strong>Profile Not Found:</strong> Your student profile could not be found. Please contact an administrator to link your account.
+  </div>
+
+  <!-- Search and Filter -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-3">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+          <label class="form-label small text-muted mb-1">Search Courses</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="bi bi-search text-muted"></i>
+            </span>
+            <input 
+              type="text" 
+              class="form-control border-start-0 ps-0"
+              placeholder="Search by title, code, instructor..."
+              [value]="searchTerm()"
+              (input)="onSearch($event)"
+            >
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small text-muted mb-1">Specialization</label>
+          <select 
+            class="form-select"
+            [value]="selectedSpecialization()"
+            (change)="onSpecializationChange($event)"
+          >
+            <option value="">All Specializations</option>
+            <option *ngFor="let spec of specializations()" [value]="spec">{{ spec }}</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <button class="btn btn-outline-secondary w-100" (click)="clearFilters()">
+            <i class="bi bi-x-circle me-2"></i>Clear Filters
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="text-muted mt-3">Loading courses...</p>
+  </div>
+
+  <!-- Results Count -->
+  <div *ngIf="!loading()" class="mb-3">
+    <span class="text-muted">
+      Showing <strong>{{ filteredCourses().length }}</strong> of {{ courses().length }} courses
+    </span>
+  </div>
+
+  <!-- Course Grid -->
+  <div *ngIf="!loading()" class="row g-4">
+    <div class="col-md-6 col-lg-4" *ngFor="let course of filteredCourses()">
+      <div class="card h-100 border-0 shadow-sm course-card">
+        <div class="card-body d-flex flex-column">
+          <!-- Course Header -->
+          <div class="d-flex align-items-start justify-content-between mb-3">
+            <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-2">
+              <i class="bi bi-book-half" style="font-size: 1.25rem;"></i>
+            </div>
+            <div class="text-end">
+              <span class="badge bg-light text-dark border">{{ course.code }}</span>
+              <div class="small text-muted mt-1">{{ course.credit }} Credits</div>
+            </div>
+          </div>
+
+          <!-- Course Title & Description -->
+          <h5 class="fw-bold text-dark mb-2">{{ course.title }}</h5>
+          <p class="text-secondary small mb-3 flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+            {{ course.description || 'No description available.' }}
+          </p>
+
+          <!-- Specialization -->
+          <div class="mb-3" *ngIf="course.specialization">
+            <span class="badge bg-info bg-opacity-10 text-info">
+              <i class="bi bi-tag me-1"></i>{{ course.specialization.name }}
+            </span>
+          </div>
+
+          <!-- Instructor -->
+          <div class="d-flex align-items-center mb-3" *ngIf="course.trainer">
+            <img 
+              [src]="'https://ui-avatars.com/api/?name=' + course.trainer.firstName + '+' + course.trainer.lastName + '&background=random&size=32'"
+              class="rounded-circle me-2"
+              width="28"
+              height="28"
+              alt="Instructor"
+            >
+            <small class="text-muted">{{ course.trainer.firstName }} {{ course.trainer.lastName }}</small>
+          </div>
+
+          <!-- Availability -->
+          <div class="mb-3">
+            <div class="d-flex justify-content-between small mb-1">
+              <span class="text-muted">Availability</span>
+              <span class="fw-medium">{{ course.enrolledStudentsCount || 0 }}/{{ course.maxStudents }} students</span>
+            </div>
+            <div class="progress" style="height: 6px;">
+              <div 
+                class="progress-bar"
+                [ngClass]="getAvailabilityClass(course)"
+                [style.width.%]="getAvailabilityPercentage(course)"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Enrollment Status / Action -->
+          <div class="mt-auto">
+            <!-- Already Enrolled -->
+            <div *ngIf="isEnrolled(course.id)" class="d-flex align-items-center justify-content-between">
+              <span class="badge bg-success bg-opacity-10 text-success px-3 py-2">
+                <i class="bi bi-check-circle me-1"></i>
+                {{ getEnrollmentStatus(course.id) }}
+              </span>
+              <a [routerLink]="['/student/courses', course.id]" class="btn btn-sm btn-outline-primary">
+                View Details
+              </a>
+            </div>
+
+            <!-- Can Enroll -->
+            <div *ngIf="!isEnrolled(course.id) && canEnroll(course)" class="d-grid gap-2">
+              <button 
+                class="btn btn-primary"
+                (click)="enrollInCourse(course)"
+                [disabled]="enrolling() === course.id"
+              >
+                <span *ngIf="enrolling() !== course.id">
+                  <i class="bi bi-plus-circle me-2"></i>Enroll Now
+                </span>
+                <span *ngIf="enrolling() === course.id">
+                  <span class="spinner-border spinner-border-sm me-2"></span>Enrolling...
+                </span>
+              </button>
+              <a [routerLink]="['/student/courses', course.id]" class="btn btn-outline-secondary btn-sm">
+                View Details
+              </a>
+            </div>
+
+            <!-- Course Full -->
+            <div *ngIf="!isEnrolled(course.id) && (course.enrolledStudentsCount || 0) >= course.maxStudents" class="d-grid">
+              <button class="btn btn-secondary" disabled>
+                <i class="bi bi-x-circle me-2"></i>Course Full
+              </button>
+            </div>
+
+            <!-- No Student Profile -->
+            <div *ngIf="!isEnrolled(course.id) && currentStudent() === null && (course.enrolledStudentsCount || 0) < course.maxStudents">
+              <a [routerLink]="['/student/courses', course.id]" class="btn btn-outline-primary w-100">
+                View Details
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Results -->
+  <div *ngIf="!loading() && filteredCourses().length === 0" class="text-center py-5">
+    <i class="bi bi-search text-muted" style="font-size: 4rem;"></i>
+    <h5 class="mt-3 text-muted">No courses found</h5>
+    <p class="text-muted">Try adjusting your search or filter criteria.</p>
+    <button class="btn btn-outline-primary" (click)="clearFilters()">
+      Clear Filters
+    </button>
+  </div>
+</div>

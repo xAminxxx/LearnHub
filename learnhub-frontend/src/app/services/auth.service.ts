@@ -39,6 +39,12 @@ export class AuthService {
           this.setToken(response.token);
           const user = this.decodeTokenToUser(response.token);
           if (user) {
+            // Try to get existing user info from storage (preserves role from registration)
+            const existingUser = this.getUserFromStorage();
+            if (existingUser && existingUser.username === user.username) {
+              // Preserve the role from previous session
+              user.role = existingUser.role;
+            }
             this.setUser(user);
           }
         }
@@ -47,7 +53,15 @@ export class AuthService {
   }
 
   register(data: RegisterRequest): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/register`, data);
+    return this.http.post<User>(`${this.apiUrl}/register`, data).pipe(
+      tap(user => {
+        // Store the user with their role from the registration response
+        // This ensures we have the correct role when they log in
+        if (user) {
+          this.setUser(user);
+        }
+      })
+    );
   }
 
   logout(): void {
@@ -111,13 +125,37 @@ export class AuthService {
   private decodeTokenToUser(token: string): User | null {
     try {
       const decoded = this.decodeToken(token);
-      // Note: The backend JWT only contains username in 'sub'
-      // Role info would need to be fetched separately or added to token claims
+      const username = decoded.sub;
+      
+      // Determine role from token claims or infer from demo usernames
+      let role: 'ADMIN' | 'TRAINER' | 'STUDENT' = 'STUDENT';
+      
+      // Check if role is in the token (some backends include it)
+      if (decoded.role) {
+        role = decoded.role as 'ADMIN' | 'TRAINER' | 'STUDENT';
+      } else if (decoded.roles && Array.isArray(decoded.roles) && decoded.roles.length > 0) {
+        // Some backends use "roles" array with "ROLE_" prefix
+        const tokenRole = decoded.roles[0].replace('ROLE_', '');
+        if (['ADMIN', 'TRAINER', 'STUDENT'].includes(tokenRole)) {
+          role = tokenRole as 'ADMIN' | 'TRAINER' | 'STUDENT';
+        }
+      } else {
+        // Fallback: infer role from demo usernames
+        const lowerUsername = username.toLowerCase();
+        if (lowerUsername === 'admin' || lowerUsername.includes('admin')) {
+          role = 'ADMIN';
+        } else if (lowerUsername === 'trainer' || lowerUsername.includes('trainer')) {
+          role = 'TRAINER';
+        } else if (lowerUsername === 'student' || lowerUsername.includes('student')) {
+          role = 'STUDENT';
+        }
+      }
+      
       return {
         id: 0, // Not available in token
-        username: decoded.sub,
+        username: username,
         email: '', // Not available in token
-        role: 'STUDENT', // Default - ideally fetch from /api/users/me endpoint
+        role: role,
         enabled: true
       };
     } catch {
@@ -129,5 +167,14 @@ export class AuthService {
   hasRole(...roles: string[]): boolean {
     const user = this.currentUserSignal();
     return user ? roles.includes(user.role) : false;
+  }
+
+  // Update user role (useful for admin testing different views)
+  updateUserRole(role: 'ADMIN' | 'TRAINER' | 'STUDENT'): void {
+    const user = this.currentUserSignal();
+    if (user) {
+      const updatedUser = { ...user, role };
+      this.setUser(updatedUser);
+    }
   }
 }

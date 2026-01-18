@@ -3,35 +3,74 @@
   <aside class="sidebar d-none d-lg-block">
     <div class="sidebar-header">
       <h4 class="text-white fw-bold mb-0">
-        LearnHub <span class="text-primary">Admin</span>
+        LearnHub <span class="text-primary">{{ isStudent() ? 'Student' : (isTrainer() ? 'Trainer' : 'Admin') }}</span>
       </h4>
       <div class="badge bg-primary mt-2" style="font-size: 0.6rem;">ANGULAR ENGINE</div>
     </div>
     
     <div class="mt-4">
-      <a routerLink="/dashboard" routerLinkActive="active" class="sidebar-link">
-        <i class="bi bi-speedometer2"></i> Dashboard
-      </a>
-      <a routerLink="/students" routerLinkActive="active" class="sidebar-link">
-        <i class="bi bi-people"></i> Students
-      </a>
-      <a routerLink="/trainers" routerLinkActive="active" class="sidebar-link">
-        <i class="bi bi-person-badge"></i> Trainers
-      </a>
-      <a routerLink="/courses" routerLinkActive="active" class="sidebar-link">
-        <i class="bi bi-book"></i> Courses
-      </a>
-      <a routerLink="/specializations" routerLinkActive="active" class="sidebar-link">
-        <i class="bi bi-tags"></i> Specializations
-      </a>
-      <a routerLink="/enrollments" routerLinkActive="active" class="sidebar-link">
-        <i class="bi bi-briefcase"></i> Enrollments
-      </a>
+      <!-- Student Navigation -->
+      @if (isStudent()) {
+        <a routerLink="/student/dashboard" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-house"></i> My Dashboard
+        </a>
+        <a routerLink="/student/courses" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-collection"></i> Browse Courses
+        </a>
+        <a routerLink="/student/my-enrollments" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-journal-bookmark"></i> My Enrollments
+        </a>
+      }
+
+      <!-- Trainer Navigation -->
+      @if (isTrainer()) {
+        <a routerLink="/trainer/dashboard" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-house"></i> My Dashboard
+        </a>
+        <a routerLink="/trainer/courses" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-book"></i> My Courses
+        </a>
+        <a routerLink="/trainer/students" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-people"></i> My Students
+        </a>
+      }
+      
+      <!-- Admin Navigation -->
+      @if (isAdmin()) {
+        <a routerLink="/dashboard" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a routerLink="/students" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-people"></i> Students
+        </a>
+        <a routerLink="/trainers" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-person-badge"></i> Trainers
+        </a>
+        <a routerLink="/courses" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-book"></i> Courses
+        </a>
+        <a routerLink="/specializations" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-tags"></i> Specializations
+        </a>
+        <a routerLink="/enrollments" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-briefcase"></i> Enrollments
+        </a>
+        
+        <!-- Link to Portals for Admins -->
+        <hr class="my-3 border-secondary border-opacity-25">
+        <small class="text-white-50 px-3">Portal Views</small>
+        <a routerLink="/student/dashboard" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-mortarboard"></i> Student View
+        </a>
+        <a routerLink="/trainer/dashboard" routerLinkActive="active" class="sidebar-link">
+          <i class="bi bi-person-workspace"></i> Trainer View
+        </a>
+      }
     </div>
 
     <div class="position-absolute bottom-0 w-100 p-4 border-top border-secondary border-opacity-25 mt-auto">
       <div class="d-flex align-items-center text-secondary small">
-        <span class="badge bg-primary me-2">DEV</span>
+        <span class="badge bg-primary me-2">{{ currentUser()?.role || 'USER' }}</span>
         <span class="text-white-50">Angular Framework</span>
       </div>
     </div>

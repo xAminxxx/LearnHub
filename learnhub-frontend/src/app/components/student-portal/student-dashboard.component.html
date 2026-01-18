@@ -1,0 +1,215 @@
+<div class="container-fluid px-0">
+  <!-- Welcome Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card bg-gradient border-0 shadow-sm" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);">
+        <div class="card-body py-4 text-white">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <h2 class="fw-bold mb-2">
+                Welcome back, {{ currentUser()?.username || 'Student' }}! 👋
+              </h2>
+              <p class="mb-0 opacity-75">
+                Explore courses, track your progress, and continue your learning journey.
+              </p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+              <a routerLink="/student/courses" class="btn btn-light btn-lg fw-medium">
+                <i class="bi bi-search me-2"></i>Browse Courses
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row g-4 mb-4" *ngIf="!loading()">
+    <div class="col-md-6 col-xl-3">
+      <div class="card h-100 border-start border-4 border-primary shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="p-2 bg-primary bg-opacity-10 rounded text-primary">
+              <i class="bi bi-book-half" style="font-size: 1.5rem;"></i>
+            </div>
+          </div>
+          <h6 class="text-secondary mb-1">Available Courses</h6>
+          <h3 class="fw-bold mb-0 text-dark">{{ stats().availableCourses }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+      <div class="card h-100 border-start border-4 border-success shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="p-2 bg-success bg-opacity-10 rounded text-success">
+              <i class="bi bi-journal-check" style="font-size: 1.5rem;"></i>
+            </div>
+          </div>
+          <h6 class="text-secondary mb-1">Enrolled Courses</h6>
+          <h3 class="fw-bold mb-0 text-dark">{{ stats().enrolledCourses }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+      <div class="card h-100 border-start border-4 border-info shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="p-2 bg-info bg-opacity-10 rounded text-info">
+              <i class="bi bi-trophy" style="font-size: 1.5rem;"></i>
+            </div>
+          </div>
+          <h6 class="text-secondary mb-1">Completed</h6>
+          <h3 class="fw-bold mb-0 text-dark">{{ stats().completedCourses }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+      <div class="card h-100 border-start border-4 border-warning shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="p-2 bg-warning bg-opacity-10 rounded text-warning">
+              <i class="bi bi-collection" style="font-size: 1.5rem;"></i>
+            </div>
+          </div>
+          <h6 class="text-secondary mb-1">Total Courses</h6>
+          <h3 class="fw-bold mb-0 text-dark">{{ stats().totalCourses }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="row g-4" *ngIf="!loading()">
+    <!-- Recommended Courses -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold mb-0">
+            <i class="bi bi-lightbulb text-warning me-2"></i>Recommended Courses
+          </h5>
+          <a routerLink="/student/courses" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        <div class="card-body p-0">
+          <div class="row g-0" *ngIf="recommendedCourses().length > 0">
+            <div class="col-md-6 p-3" *ngFor="let course of recommendedCourses()">
+              <div class="card h-100 border hover-lift">
+                <div class="card-body">
+                  <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-2">
+                      <i class="bi bi-book"></i>
+                    </div>
+                    <span class="badge bg-light text-dark border">{{ course.credit }} Credits</span>
+                  </div>
+                  <h6 class="fw-bold text-dark mb-1">{{ course.title }}</h6>
+                  <p class="text-muted small mb-2">{{ course.code }}</p>
+                  <p class="text-secondary small mb-3 text-truncate">{{ course.description }}</p>
+                  
+                  <div class="d-flex align-items-center justify-content-between">
+                    <div class="small text-muted">
+                      <i class="bi bi-people me-1"></i>
+                      {{ course.enrolledStudentsCount || 0 }}/{{ course.maxStudents }}
+                    </div>
+                    <a [routerLink]="['/student/courses', course.id]" class="btn btn-sm btn-primary">
+                      View Details
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-center py-5" *ngIf="recommendedCourses().length === 0">
+            <i class="bi bi-emoji-smile text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-2 mb-0">You've explored all available courses!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- My Enrollments -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold mb-0">
+            <i class="bi bi-journal-bookmark text-success me-2"></i>My Enrollments
+          </h5>
+          <a routerLink="/student/my-enrollments" class="btn btn-sm btn-outline-success">View All</a>
+        </div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush" *ngIf="recentEnrollments().length > 0">
+            <div class="list-group-item px-3 py-3" *ngFor="let enrollment of recentEnrollments()">
+              <div class="d-flex align-items-center">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle p-2 me-3">
+                  <i class="bi bi-journal-check"></i>
+                </div>
+                <div class="flex-grow-1 min-width-0">
+                  <h6 class="fw-medium mb-0 text-truncate">{{ enrollment.course?.title || enrollment.courseCode }}</h6>
+                  <small class="text-muted">{{ enrollment.enrollmentDate | date:'mediumDate' }}</small>
+                </div>
+                <span class="badge" [ngClass]="getStatusBadgeClass(enrollment.status)">
+                  {{ enrollment.status }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-center py-5" *ngIf="recentEnrollments().length === 0">
+            <i class="bi bi-journal-x text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-2 mb-0">No active enrollments yet.</p>
+            <a routerLink="/student/courses" class="btn btn-sm btn-primary mt-3">
+              Browse Courses
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="row mt-4" *ngIf="!loading()">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body py-4">
+          <div class="row g-3 text-center">
+            <div class="col-md-4">
+              <a routerLink="/student/courses" class="text-decoration-none">
+                <div class="p-3 border rounded-3 hover-lift">
+                  <i class="bi bi-search text-primary d-block mb-2" style="font-size: 1.5rem;"></i>
+                  <span class="text-dark fw-medium">Browse All Courses</span>
+                </div>
+              </a>
+            </div>
+            <div class="col-md-4">
+              <a routerLink="/student/my-enrollments" class="text-decoration-none">
+                <div class="p-3 border rounded-3 hover-lift">
+                  <i class="bi bi-journal-bookmark text-success d-block mb-2" style="font-size: 1.5rem;"></i>
+                  <span class="text-dark fw-medium">My Enrollments</span>
+                </div>
+              </a>
+            </div>
+            <div class="col-md-4">
+              <a routerLink="/student/courses" class="text-decoration-none">
+                <div class="p-3 border rounded-3 hover-lift">
+                  <i class="bi bi-plus-circle text-info d-block mb-2" style="font-size: 1.5rem;"></i>
+                  <span class="text-dark fw-medium">Enroll in New Course</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

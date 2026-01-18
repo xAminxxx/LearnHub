@@ -1,0 +1,181 @@
+<div class="container-fluid px-0">
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Course Not Found -->
+  <div *ngIf="!loading() && !course()" class="text-center py-5">
+    <i class="bi bi-exclamation-triangle text-warning" style="font-size: 4rem;"></i>
+    <h4 class="mt-3">Course Not Found</h4>
+    <button class="btn btn-primary" (click)="goBack()">Back to Courses</button>
+  </div>
+
+  <!-- Course Details -->
+  <div *ngIf="!loading() && course()">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div>
+        <button class="btn btn-outline-secondary mb-3" (click)="goBack()">
+          <i class="bi bi-arrow-left me-2"></i>Back to My Courses
+        </button>
+        <h2 class="fw-bold mb-1">{{ course()!.title }}</h2>
+        <p class="text-muted mb-0">
+          <span class="badge bg-light text-dark border me-2">{{ course()!.code }}</span>
+          <span>{{ course()!.credit }} Credits</span>
+          <span class="mx-2">•</span>
+          <span>{{ course()!.specialization?.name || 'General' }}</span>
+        </p>
+      </div>
+      <a [routerLink]="['/trainer/courses', course()!.id, 'grades']" class="btn btn-warning">
+        <i class="bi bi-clipboard-check me-2"></i>Manage Grades
+      </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="card h-100 border-0 shadow-sm cursor-pointer"
+             [class.border-dark]="filterStatus() === 'ALL'"
+             [class.border-2]="filterStatus() === 'ALL'"
+             (click)="setFilter('ALL')">
+          <div class="card-body text-center py-3">
+            <h3 class="fw-bold mb-0 text-dark">{{ stats().total }}</h3>
+            <small class="text-muted">Total Students</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card h-100 border-0 shadow-sm cursor-pointer"
+             [class.border-success]="filterStatus() === 'ACTIVE'"
+             [class.border-2]="filterStatus() === 'ACTIVE'"
+             (click)="setFilter('ACTIVE')">
+          <div class="card-body text-center py-3">
+            <h3 class="fw-bold mb-0 text-success">{{ stats().active }}</h3>
+            <small class="text-muted">Active</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card h-100 border-0 shadow-sm cursor-pointer"
+             [class.border-primary]="filterStatus() === 'COMPLETED'"
+             [class.border-2]="filterStatus() === 'COMPLETED'"
+             (click)="setFilter('COMPLETED')">
+          <div class="card-body text-center py-3">
+            <h3 class="fw-bold mb-0 text-primary">{{ stats().completed }}</h3>
+            <small class="text-muted">Completed</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center py-3">
+            <h3 class="fw-bold mb-0 text-warning">{{ stats().pending }}</h3>
+            <small class="text-muted">Pending Grades</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0">
+          <i class="bi bi-people text-primary me-2"></i>Enrolled Students
+        </h5>
+        <div class="btn-group" role="group">
+          <button 
+            type="button" 
+            class="btn btn-sm"
+            [class.btn-dark]="filterStatus() === 'ALL'"
+            [class.btn-outline-dark]="filterStatus() !== 'ALL'"
+            (click)="setFilter('ALL')"
+          >All</button>
+          <button 
+            type="button" 
+            class="btn btn-sm"
+            [class.btn-success]="filterStatus() === 'ACTIVE'"
+            [class.btn-outline-success]="filterStatus() !== 'ACTIVE'"
+            (click)="setFilter('ACTIVE')"
+          >Active</button>
+          <button 
+            type="button" 
+            class="btn btn-sm"
+            [class.btn-primary]="filterStatus() === 'COMPLETED'"
+            [class.btn-outline-primary]="filterStatus() !== 'COMPLETED'"
+            (click)="setFilter('COMPLETED')"
+          >Completed</button>
+        </div>
+      </div>
+
+      <div class="table-responsive" *ngIf="filteredEnrollments().length > 0">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="bg-light">
+            <tr>
+              <th class="ps-4 py-3">Student</th>
+              <th class="py-3">Enrolled Date</th>
+              <th class="py-3">Status</th>
+              <th class="py-3">Score</th>
+              <th class="py-3 text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let enrollment of filteredEnrollments()">
+              <td class="ps-4 py-3">
+                <div class="d-flex align-items-center">
+                  <img 
+                    [src]="'https://ui-avatars.com/api/?name=' + (enrollment.studentName || 'Student') + '&background=random&size=40'"
+                    class="rounded-circle me-3"
+                    width="40"
+                    height="40"
+                    alt="Student"
+                  >
+                  <div>
+                    <h6 class="fw-medium mb-0">{{ enrollment.studentName }}</h6>
+                    <small class="text-muted">ID: {{ enrollment.studentId }}</small>
+                  </div>
+                </div>
+              </td>
+              <td class="py-3">
+                <span class="text-muted">{{ enrollment.enrollmentDate | date:'mediumDate' }}</span>
+              </td>
+              <td class="py-3">
+                <span class="badge" [ngClass]="getStatusBadgeClass(enrollment.status)">
+                  {{ enrollment.status }}
+                </span>
+              </td>
+              <td class="py-3">
+                <span *ngIf="enrollment.score !== null && enrollment.score !== undefined" class="fw-bold">
+                  {{ enrollment.score }}%
+                  <span *ngIf="enrollment.gradeType" class="badge bg-light text-dark border ms-1 small">
+                    {{ enrollment.gradeType }}
+                  </span>
+                </span>
+                <span *ngIf="enrollment.score === null || enrollment.score === undefined" class="text-warning">
+                  <i class="bi bi-exclamation-circle me-1"></i>Not graded
+                </span>
+              </td>
+              <td class="py-3 text-end pe-4">
+                <a [routerLink]="['/trainer/courses', course()!.id, 'grades']" 
+                   [queryParams]="{student: enrollment.studentId}"
+                   class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-pencil me-1"></i>Grade
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- No Students -->
+      <div *ngIf="filteredEnrollments().length === 0" class="text-center py-5">
+        <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-2 mb-0">
+          {{ filterStatus() === 'ALL' ? 'No students enrolled in this course yet.' : 'No ' + filterStatus().toLowerCase() + ' students.' }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

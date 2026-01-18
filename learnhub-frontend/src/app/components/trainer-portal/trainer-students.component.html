@@ -1,0 +1,146 @@
+<div class="container-fluid px-0">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">
+        <i class="bi bi-people text-success me-2"></i>My Students
+      </h2>
+      <p class="text-secondary mb-0">View all students enrolled in your courses.</p>
+    </div>
+    <a routerLink="/trainer/dashboard" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+    </a>
+  </div>
+
+  <!-- No Trainer Profile Warning -->
+  <div *ngIf="!loading() && !currentTrainer()" class="alert alert-warning" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    <strong>Profile Not Found:</strong> Your trainer profile could not be found.
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading() && currentTrainer()">
+    <!-- Course Filter -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-md-3">
+            <label class="form-label small text-muted mb-1">Filter by Course</label>
+          </div>
+          <div class="col-md-9">
+            <div class="btn-group flex-wrap" role="group">
+              <button 
+                type="button" 
+                class="btn"
+                [class.btn-primary]="selectedCourse() === null"
+                [class.btn-outline-primary]="selectedCourse() !== null"
+                (click)="selectCourse(null)"
+              >
+                All Courses ({{ myEnrollments().length }})
+              </button>
+              <button 
+                *ngFor="let course of myCourses()"
+                type="button" 
+                class="btn"
+                [class.btn-primary]="selectedCourse() === course.id"
+                [class.btn-outline-primary]="selectedCourse() !== course.id"
+                (click)="selectCourse(course.id)"
+              >
+                {{ course.code }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students List -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h5 class="fw-bold mb-0">
+          Students ({{ uniqueStudents().length }})
+        </h5>
+      </div>
+
+      <div class="table-responsive" *ngIf="uniqueStudents().length > 0">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="bg-light">
+            <tr>
+              <th class="ps-4 py-3">Student</th>
+              <th class="py-3">Courses</th>
+              <th class="py-3">Status</th>
+              <th class="py-3">Grades</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let enrollment of uniqueStudents()">
+              <td class="ps-4 py-3">
+                <div class="d-flex align-items-center">
+                  <img 
+                    [src]="'https://ui-avatars.com/api/?name=' + (enrollment.studentName || 'Student') + '&background=random&size=48'"
+                    class="rounded-circle me-3"
+                    width="48"
+                    height="48"
+                    alt="Student"
+                  >
+                  <div>
+                    <h6 class="fw-bold mb-0">{{ enrollment.studentName }}</h6>
+                    <small class="text-muted">Student ID: {{ enrollment.studentId }}</small>
+                  </div>
+                </div>
+              </td>
+              <td class="py-3">
+                <div class="d-flex flex-wrap gap-1">
+                  <span 
+                    *ngFor="let e of getStudentEnrollments(enrollment.studentId)"
+                    class="badge bg-light text-dark border"
+                  >
+                    {{ getCourseCode(e.courseId) }}
+                  </span>
+                </div>
+              </td>
+              <td class="py-3">
+                <div class="d-flex flex-wrap gap-1">
+                  <span 
+                    *ngFor="let e of getStudentEnrollments(enrollment.studentId)"
+                    class="badge"
+                    [ngClass]="getStatusBadgeClass(e.status)"
+                  >
+                    {{ e.status }}
+                  </span>
+                </div>
+              </td>
+              <td class="py-3">
+                <div class="d-flex flex-wrap gap-1">
+                  <span 
+                    *ngFor="let e of getStudentEnrollments(enrollment.studentId)"
+                    class="badge"
+                    [ngClass]="e.score !== null ? 'bg-success' : 'bg-warning'"
+                  >
+                    {{ e.score !== null ? e.score + '%' : 'Pending' }}
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- No Students -->
+      <div *ngIf="uniqueStudents().length === 0" class="text-center py-5">
+        <i class="bi bi-people text-muted" style="font-size: 4rem;"></i>
+        <h5 class="mt-3 text-muted">No students found</h5>
+        <p class="text-muted">
+          {{ selectedCourse() ? 'No students enrolled in this course.' : 'No students enrolled in any of your courses yet.' }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

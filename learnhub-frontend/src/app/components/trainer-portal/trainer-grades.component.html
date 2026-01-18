@@ -1,0 +1,194 @@
+<div class="container-fluid px-0">
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Course Details -->
+  <div *ngIf="!loading() && course()">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div>
+        <button class="btn btn-outline-secondary mb-3" (click)="goBack()">
+          <i class="bi bi-arrow-left me-2"></i>Back to Course
+        </button>
+        <h2 class="fw-bold mb-1">
+          <i class="bi bi-clipboard-check text-warning me-2"></i>Grade Students
+        </h2>
+        <p class="text-muted mb-0">
+          {{ course()!.title }} ({{ course()!.code }})
+        </p>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div *ngIf="successMessage()" class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle me-2"></i>{{ successMessage() }}
+      <button type="button" class="btn-close" (click)="successMessage.set('')"></button>
+    </div>
+
+    <div *ngIf="errorMessage()" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="bi bi-exclamation-triangle me-2"></i>{{ errorMessage() }}
+      <button type="button" class="btn-close" (click)="errorMessage.set('')"></button>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body text-center py-3">
+            <h3 class="fw-bold mb-0 text-dark">{{ stats().total }}</h3>
+            <small class="text-muted">Active Students</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body text-center py-3">
+            <h3 class="fw-bold mb-0 text-success">{{ stats().graded }}</h3>
+            <small class="text-muted">Graded</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body text-center py-3">
+            <h3 class="fw-bold mb-0 text-warning">{{ stats().pending }}</h3>
+            <small class="text-muted">Pending</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grading Table -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h5 class="fw-bold mb-0">
+          <i class="bi bi-people text-primary me-2"></i>Student Grades
+        </h5>
+      </div>
+
+      <div *ngIf="activeEnrollments().length > 0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+              <tr>
+                <th class="ps-4 py-3">Student</th>
+                <th class="py-3" style="width: 120px;">Score (0-100)</th>
+                <th class="py-3" style="width: 140px;">Grade Type</th>
+                <th class="py-3" style="width: 200px;">Notes</th>
+                <th class="py-3 text-end pe-4" style="width: 200px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let enrollment of activeEnrollments()">
+                <td class="ps-4 py-3">
+                  <div class="d-flex align-items-center">
+                    <img 
+                      [src]="'https://ui-avatars.com/api/?name=' + (enrollment.studentName || 'Student') + '&background=random&size=40'"
+                      class="rounded-circle me-3"
+                      width="40"
+                      height="40"
+                      alt="Student"
+                    >
+                    <div>
+                      <h6 class="fw-medium mb-0">{{ enrollment.studentName }}</h6>
+                      <small class="text-muted">Enrolled: {{ enrollment.enrollmentDate | date:'shortDate' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3">
+                  <input 
+                    type="number" 
+                    class="form-control form-control-sm"
+                    [value]="enrollment.score"
+                    min="0" 
+                    max="100"
+                    placeholder="0-100"
+                    #scoreInput
+                    [class.is-valid]="enrollment.score !== undefined && enrollment.score !== null"
+                  >
+                </td>
+                <td class="py-3">
+                  <select 
+                    class="form-select form-select-sm"
+                    [value]="enrollment.gradeType || ''"
+                    #gradeTypeSelect
+                  >
+                    <option value="">Select type</option>
+                    <option *ngFor="let type of gradeTypes" [value]="type">{{ type }}</option>
+                  </select>
+                </td>
+                <td class="py-3">
+                  <input 
+                    type="text" 
+                    class="form-control form-control-sm"
+                    [value]="enrollment.notes || ''"
+                    placeholder="Optional notes"
+                    #notesInput
+                  >
+                </td>
+                <td class="py-3 text-end pe-4">
+                  <div class="btn-group">
+                    <button 
+                      class="btn btn-sm btn-primary"
+                      (click)="saveGrade(enrollment, scoreInput.value ? +scoreInput.value : null, gradeTypeSelect.value, notesInput.value)"
+                      [disabled]="saving() === enrollment.id"
+                    >
+                      <span *ngIf="saving() !== enrollment.id">
+                        <i class="bi bi-check me-1"></i>Save
+                      </span>
+                      <span *ngIf="saving() === enrollment.id">
+                        <span class="spinner-border spinner-border-sm"></span>
+                      </span>
+                    </button>
+                    <button 
+                      class="btn btn-sm btn-success"
+                      (click)="markAsCompleted(enrollment)"
+                      [disabled]="saving() === enrollment.id || enrollment.score === undefined || enrollment.score === null"
+                      title="Mark as completed"
+                    >
+                      <i class="bi bi-mortarboard"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- No Active Students -->
+      <div *ngIf="activeEnrollments().length === 0" class="text-center py-5">
+        <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+        <p class="text-muted mt-2 mb-0">No active students to grade.</p>
+        <a [routerLink]="['/trainer/courses', course()!.id]" class="btn btn-outline-primary mt-3">
+          View All Students
+        </a>
+      </div>
+    </div>
+
+    <!-- Grading Guide -->
+    <div class="card border-0 bg-light mt-4">
+      <div class="card-body py-3">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h6 class="fw-bold mb-1"><i class="bi bi-info-circle text-primary me-2"></i>Grading Guide</h6>
+            <small class="text-muted">
+              Enter a score from 0-100, select the grade type, and click Save. 
+              Once graded, click the graduation cap to mark the student as COMPLETED.
+            </small>
+          </div>
+          <div class="col-md-4 text-md-end mt-2 mt-md-0">
+            <span class="badge bg-success me-1">80-100: Excellent</span>
+            <span class="badge bg-primary me-1">60-79: Good</span>
+            <span class="badge bg-warning me-1">40-59: Pass</span>
+            <span class="badge bg-danger">0-39: Fail</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

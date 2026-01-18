@@ -105,13 +105,13 @@ import { LoginRequest } from '../../models/auth.model';
         <div class="demo-credentials">
           <p class="text-muted small mb-2">Demo Credentials:</p>
           <div class="d-flex gap-2 flex-wrap justify-content-center">
-            <button class="btn btn-sm btn-outline-secondary" (click)="fillDemo('admin', 'admin123')">
+            <button class="btn btn-sm btn-outline-secondary" (click)="fillDemo('admin', 'password')">
               Admin
             </button>
-            <button class="btn btn-sm btn-outline-secondary" (click)="fillDemo('trainer', 'trainer123')">
+            <button class="btn btn-sm btn-outline-secondary" (click)="fillDemo('trainer', 'password')">
               Trainer
             </button>
-            <button class="btn btn-sm btn-outline-secondary" (click)="fillDemo('student', 'student123')">
+            <button class="btn btn-sm btn-outline-secondary" (click)="fillDemo('student', 'password')">
               Student
             </button>
           </div>
@@ -238,9 +238,21 @@ export class LoginComponent {
       next: (response) => {
         this.isLoading.set(false);
         if (response.success) {
-          // Get return URL or default to dashboard
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
-          this.router.navigateByUrl(returnUrl);
+          // Get return URL or redirect based on role
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+          if (returnUrl) {
+            this.router.navigateByUrl(returnUrl);
+          } else {
+            // Redirect based on user role
+            const role = this.authService.currentUser()?.role;
+            if (role === 'STUDENT') {
+              this.router.navigate(['/student/dashboard']);
+            } else if (role === 'TRAINER') {
+              this.router.navigate(['/trainer/dashboard']);
+            } else {
+              this.router.navigate(['/dashboard']);
+            }
+          }
         }
       },
       error: (err) => {

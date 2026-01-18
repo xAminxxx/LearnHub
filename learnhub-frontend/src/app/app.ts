@@ -17,6 +17,9 @@ export class App {
   // Auth state
   isAuthenticated = this.authService.isAuthenticated;
   currentUser = this.authService.currentUser;
+  isStudent = this.authService.isStudent;
+  isAdmin = this.authService.isAdmin;
+  isTrainer = this.authService.isTrainer;
   
   // Computed display name
   displayName = computed(() => {
@@ -28,6 +31,11 @@ export class App {
   isAuthRoute = computed(() => {
     const authRoutes = ['/login', '/register', '/unauthorized'];
     return authRoutes.includes(this.router.url);
+  });
+
+  // Check if current route is student portal
+  isStudentRoute = computed(() => {
+    return this.router.url.startsWith('/student');
   });
 
   logout(): void {

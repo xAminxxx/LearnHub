@@ -19,6 +19,19 @@ import { RegisterComponent } from './components/auth/register.component';
 import { UnauthorizedComponent } from './components/auth/unauthorized.component';
 import { authGuard, guestGuard } from './guards/auth.guard';
 
+// Student Portal Components
+import { StudentDashboardComponent } from './components/student-portal/student-dashboard.component';
+import { CourseCatalogComponent } from './components/student-portal/course-catalog.component';
+import { StudentCourseDetailComponent } from './components/student-portal/student-course-detail.component';
+import { MyEnrollmentsComponent } from './components/student-portal/my-enrollments.component';
+
+// Trainer Portal Components
+import { TrainerDashboardComponent } from './components/trainer-portal/trainer-dashboard.component';
+import { TrainerCoursesComponent } from './components/trainer-portal/trainer-courses.component';
+import { TrainerCourseDetailComponent } from './components/trainer-portal/trainer-course-detail.component';
+import { TrainerGradesComponent } from './components/trainer-portal/trainer-grades.component';
+import { TrainerStudentsComponent } from './components/trainer-portal/trainer-students.component';
+
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   
@@ -48,6 +61,19 @@ export const routes: Routes = [
   { path: 'enrollments/new', component: EnrollmentFormComponent, canActivate: [authGuard] },
   { path: 'enrollments/edit/:id', component: EnrollmentFormComponent, canActivate: [authGuard] },
   { path: 'enrollments/:id', component: EnrollmentDetailComponent, canActivate: [authGuard] },
+
+  // Student Portal Routes (for STUDENT users to browse and enroll in courses)
+  { path: 'student/dashboard', component: StudentDashboardComponent, canActivate: [authGuard] },
+  { path: 'student/courses', component: CourseCatalogComponent, canActivate: [authGuard] },
+  { path: 'student/courses/:id', component: StudentCourseDetailComponent, canActivate: [authGuard] },
+  { path: 'student/my-enrollments', component: MyEnrollmentsComponent, canActivate: [authGuard] },
+
+  // Trainer Portal Routes (for TRAINER users to manage their courses and students)
+  { path: 'trainer/dashboard', component: TrainerDashboardComponent, canActivate: [authGuard] },
+  { path: 'trainer/courses', component: TrainerCoursesComponent, canActivate: [authGuard] },
+  { path: 'trainer/courses/:id', component: TrainerCourseDetailComponent, canActivate: [authGuard] },
+  { path: 'trainer/courses/:id/grades', component: TrainerGradesComponent, canActivate: [authGuard] },
+  { path: 'trainer/students', component: TrainerStudentsComponent, canActivate: [authGuard] },
 
   // Wildcard route
   { path: '**', redirectTo: 'dashboard' }

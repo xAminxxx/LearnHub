@@ -26,4 +26,6 @@ export interface DecodedToken {
   sub: string;       // username
   iat: number;       // issued at
   exp: number;       // expiration
+  role?: string;     // optional role claim
+  roles?: string[];  // optional roles array claim
 }
